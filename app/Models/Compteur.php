@@ -5,21 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Site extends Model
+class Compteur extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'numero_site',
-        'nom_site',
-        'technologie',
-        'etape_avancement',
-        'responsable',
-        'date_debut_etape',
+        'id_client',
+        'numero',
+        'nouvel_index',
+        'date_compteur',
     ];
+
     public function client()
     {
-        return $this->hasOne(Client::class, 'id_site');
+        return $this->belongsTo(Client::class, 'id_client');
     }
 }
-

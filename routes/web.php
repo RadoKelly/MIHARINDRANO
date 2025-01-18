@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\CompteurController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +20,8 @@ use App\Http\Controllers\ProfileController;
 
 // Redirige la racine vers la page de connexion
 Route::redirect('/', '/login');
-
+Route::resource('compteurs', CompteurController::class);
+Route::resource('clients', ClientController::class);
 // Groupe de routes pour les utilisateurs authentifiés
 Route::middleware('auth')->group(function () {
     // Redirection en fonction du rôle de l'utilisateur
