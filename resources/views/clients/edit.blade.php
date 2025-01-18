@@ -4,7 +4,7 @@
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold mb-6 text-gray-800">Modifier le Client</h1>
 
-        <form action="{{ route('clients.update', $client->id) }}" method="POST" class="bg-white p-6 rounded-lg shadow-md">
+        <form action="{{ route('clients.update',['site' => $site->id,'client' => $client->id]) }}" method="POST" class="bg-white p-6 rounded-lg shadow-md">
             @csrf
             @method('PUT')
 
@@ -46,12 +46,11 @@
 
             <div class="mb-4">
                 <label for="id_site" class="block text-sm font-medium text-gray-700">Site</label>
-                <select name="id_site" id="id_site" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    @foreach($sites as $site)
-                        <option value="{{ $site->id }}" {{ $site->id == $client->id_site ? 'selected' : '' }}>
-                            {{ $site->nom_site }}
-                        </option>
-                    @endforeach
+                <select value="{{ $site->id }}" name="id_site" id="id_site" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    
+                    <option value="{{ $site->id }}" {{ $site->id == $client->id_site ? 'selected' : '' }}>
+                        {{ $site->nom_site }}
+                    </option>
                 </select>
             </div>
 

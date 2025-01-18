@@ -8,43 +8,36 @@ use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
-    public function index()
+    public function getclients()
     {
         $clients = Client::with('site')->get();
         return view('clients.index', compact('clients'));
     }
-
-    public function create()
+    public function index(Site $site)
     {
-        $sites = Site::all();
-        return view('clients.create', compact('sites'));
+        $clients = Client::where('id_site', $site->id)->with('site')->get();
+        return view('clients.index', compact('clients','site'));
     }
 
-    public function store(Request $request)
+    public function create(Site $site)
     {
-        $validatedData = $request->validate([
-            'id_site' => 'required|exists:sites,id',
-            'adress_client' => 'required|string|max:255',
-            'localite' => 'required|string|max:255',
-            'categorie' => 'required|string|max:100',
-            'date_raccordement' => 'required|date',
-            'ref' => 'required|string|unique:clients,ref',
-            'nom_client' => 'required|string|max:255',
-        ]);
-
-        Client::create($validatedData);
-
-        return redirect()->route('clients.index')->with('success', 'Client ajouté avec succès.');
+        return view('clients.create', compact('site'));
     }
 
-    public function edit($id)
+    public function store(Site $site,Request $request)
+    {
+        Client::create($request->all());
+
+        return redirect()->route('clients.index',['site' => $site->id])->with('success', 'Client ajouté avec succès.');
+    }
+
+    public function edit(Site $site,$id)
     {
         $client = Client::findOrFail($id);
-        $sites = Site::all();
-        return view('clients.edit', compact('client', 'sites'));
+        return view('clients.edit', compact('client', 'site'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request,Site $site, $id)
     {
         $client = Client::findOrFail($id);
 
@@ -60,15 +53,15 @@ class ClientController extends Controller
 
         $client->update($validatedData);
 
-        return redirect()->route('clients.index')->with('success', 'Client mis à jour avec succès.');
+        return redirect()->route('clients.index',['site' => $site->id])->with('success', 'Client mis à jour avec succès.');
     }
 
-    public function destroy($id)
+    public function destroy(Site $site,$id)
     {
         $client = Client::findOrFail($id);
         $client->delete();
 
-        return redirect()->route('clients.index')->with('success', 'Client supprimé avec succès.');
+        return redirect()->route('clients.index',['site' => $site->id])->with('success', 'Client supprimé avec succès.');
     }
     public function getCompteurs(Client $client)
     {

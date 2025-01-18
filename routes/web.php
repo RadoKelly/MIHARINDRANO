@@ -55,5 +55,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('compteurs', CompteurController::class);
     Route::get('/clients/{client}/compteurs', [ClientController::class, 'getCompteurs']);
     Route::resource('clients', ClientController::class);
+    Route::resource('sites/{site}/clients', ClientController::class);
     Route::put('/compteurs/{id}', [CompteurController::class, 'update'])->name('compteurs.update');
 });

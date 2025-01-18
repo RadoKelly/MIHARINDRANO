@@ -5,7 +5,7 @@
         <!-- Flex container for heading and button -->
         <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Liste des Clients</h1>
-            <a href="{{ route('clients.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mt-4 sm:mt-0" aria-label="Ajouter un Client">
+            <a href="{{ route('clients.create', ['site' => $site->id]) }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mt-4 sm:mt-0" aria-label="Ajouter un Client">
                 Ajouter un Client
             </a>
         </div>
@@ -50,10 +50,10 @@
                                         data-bs-target="#compteurModal">
                                         Voir les compteurs
                                     </button>
-                                    <a href="{{ route('clients.edit', $client->id) }}" class="text-yellow-500 hover:text-yellow-700 mr-2 py-1 px-2 w-full sm:w-auto border">
+                                    <a href="{{ route('clients.edit', ['site' => $site->id, 'client' => $client->id]) }}" class="text-yellow-500 hover:text-yellow-700 mr-2 py-1 px-2 w-full sm:w-auto border">
                                         Modifier
                                     </a>
-                                    <form action="{{ route('clients.destroy', $client->id) }}" method="POST" class="inline">
+                                    <form action="{{ route('clients.destroy', ['site' => $site->id, 'client' => $client->id]) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700 py-1 px-2 w-full sm:w-auto border">

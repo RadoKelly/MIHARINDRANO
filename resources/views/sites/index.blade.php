@@ -39,6 +39,8 @@
                                     <a href="{{ route('sites.edit', $site) }}" class="text-blue-500 hover:text-blue-700 mr-2 py-1 px-2 w-full sm:w-auto border">
                                         Modifier
                                     </a>
+                                    <a href="{{ route('clients.index', ['site' => $site->id]) }}" class="text-blue-500 hover:text-blue-700 mr-2 py-1 px-2 w-full sm:w-auto border">Voir les clients</a>
+
                                     <form action="{{ route('sites.destroy', $site) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
