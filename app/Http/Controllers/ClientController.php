@@ -70,4 +70,10 @@ class ClientController extends Controller
 
         return redirect()->route('clients.index')->with('success', 'Client supprimé avec succès.');
     }
+    public function getCompteurs(Client $client)
+    {
+        return response()->json([
+            'compteurs' => $client->compteurs
+        ]);
+    }
 }

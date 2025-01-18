@@ -20,8 +20,7 @@ use App\Http\Controllers\CompteurController;
 
 // Redirige la racine vers la page de connexion
 Route::redirect('/', '/login');
-Route::resource('compteurs', CompteurController::class);
-Route::resource('clients', ClientController::class);
+
 // Groupe de routes pour les utilisateurs authentifiés
 Route::middleware('auth')->group(function () {
     // Redirection en fonction du rôle de l'utilisateur
@@ -53,4 +52,8 @@ require __DIR__.'/auth.php';
 
 Route::middleware('auth')->group(function () {
     Route::resource('sites', SiteController::class);
+    Route::resource('compteurs', CompteurController::class);
+    Route::get('/clients/{client}/compteurs', [ClientController::class, 'getCompteurs']);
+    Route::resource('clients', ClientController::class);
+    Route::put('/compteurs/{id}', [CompteurController::class, 'update'])->name('compteurs.update');
 });

@@ -26,18 +26,14 @@ class CompteurController extends Controller
         return response()->json(['success' => true, 'compteur' => $compteur]);
     }
 
-    public function update(Request $request, Compteur $compteur)
+    public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'id_client' => 'required|exists:clients,id',
-            'numero' => 'required|string|max:255',
-            'nouvel_index' => 'required|numeric',
-            'date_compteur' => 'required|date',
-        ]);
-
-        $compteur->update($validated);
+        $compteur = Compteur::findOrFail($id);
+        $compteur->update($request->all());
+    
         return response()->json(['success' => true, 'compteur' => $compteur]);
     }
+    
 
     public function destroy(Compteur $compteur)
     {
