@@ -80,8 +80,8 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Numéro</th>
-                                    <th>Nouvel Index</th>
+                                    <th>N° ref</th>
+                                    <th>Index</th>
                                     <th>Date</th>
                                     <th>Action</th>
                                     <th><span id="addCompteur"  class="btn btn-primary btn-save">+</span></th>
@@ -101,6 +101,9 @@
 @endsection
 @section('scripts')
     <script>
+        const inmprimer = (idCompteur) => {
+            genererFacturePDF()
+        }
         var clientId = null;
         document.addEventListener('DOMContentLoaded', function () {
             const compteurModal = new bootstrap.Modal(document.getElementById('compteurModal'));
@@ -133,6 +136,7 @@
                                             </td>
                                             <td>
                                                 <i class="bi bi-trash text-danger"></i>
+                                                <i class="bi bi-trash text-primary" onclick="inmprimer(${compteur.id})">download facture</i>
                                             </td>
                                         </tr>
                                     `;
@@ -262,6 +266,10 @@
                                 <td class="editable" data-field="date_compteur">${data.compteur.date_compteur}</td>
                                 <td>
                                     <button class="btn btn-success btn-save" style="display:none;">Enregistrer</button>
+                                </td>
+                                <td>
+                                    <i class="bi bi-trash text-danger"></i>
+                                    <i class="bi bi-trash text-primary" onclick="inmprimer(${data.compteur.id})">download facture</i>
                                 </td>`
                             document.getElementById('compteursList').appendChild(newTr);
                         } else {
