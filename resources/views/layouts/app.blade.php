@@ -24,8 +24,9 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
+        @include('navbar')
         <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+
 
             <!-- Page Heading -->
             @if (isset($header))
@@ -37,8 +38,10 @@
             @endif
 
             <!-- Page Content -->
-            <main>
-                @yield('content')
+            <main class="flex justify-center">
+                <div class="w-[80%]">
+                    @yield('content')
+                </div>
             </main>
         </div>
     </body>
