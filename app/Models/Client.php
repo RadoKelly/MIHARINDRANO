@@ -23,9 +23,4 @@ class Client extends Model
     {
         return $this->belongsTo(Site::class, 'id_site');
     }
-
-    public function compteurs()
-    {
-        return $this->hasMany(Compteur::class, 'id_client');
-    }
 }

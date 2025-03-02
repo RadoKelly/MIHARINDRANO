@@ -3,5 +3,5 @@
     @include('navbar')
 @endsection
 @section('content')
-    <h1>compteurs</h1>
+    <h1>payement</h1>
 @endsection

@@ -6,6 +6,10 @@ use App\Http\Controllers\SiteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CompteurController;
+use App\Http\Controllers\ConsommationController;
+use App\Http\Controllers\FactureController;
+use App\Http\Controllers\PayementController;
+use App\Http\Controllers\CaisseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,9 +56,14 @@ require __DIR__.'/auth.php';
 
 Route::middleware('auth')->group(function () {
     Route::resource('sites', SiteController::class);
-    Route::resource('compteurs', CompteurController::class);
     Route::get('/clients/{client}/compteurs', [ClientController::class, 'getCompteurs']);
-    Route::resource('clients', ClientController::class);
-    Route::resource('sites/{site}/clients', ClientController::class);
     Route::put('/compteurs/{id}', [CompteurController::class, 'update'])->name('compteurs.update');
+
+    Route::resource('sites/{site}/clients', ClientController::class);
+    Route::resource('sites/{site}/compteur', CompteurController::class);
+    Route::resource('sites/{site}/consommation', ConsommationController::class);
+    Route::resource('sites/{site}/facture', FactureController::class);
+    Route::resource('sites/{site}/payement', PayementController::class);
+    Route::resource('sites/{site}/caisse', CaisseController::class);
+
 });

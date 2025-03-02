@@ -8,16 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Compteur extends Model
 {
     use HasFactory;
-
     protected $fillable = [
-        'id_client',
-        'numero',
-        'nouvel_index',
-        'date_compteur',
+        'prix_par_index',
+        'frais_compteur',
+        'date_creation',
     ];
-
-    public function client()
-    {
-        return $this->belongsTo(Client::class, 'id_client');
-    }
 }

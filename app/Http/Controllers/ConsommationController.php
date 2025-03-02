@@ -3,17 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Compteur;
+use App\Models\Consommation;
 use App\Models\Site;
-
-class CompteurController extends Controller
+class ConsommationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Site $site)
     {
-        return view('compteurs.index',['site'=>$site]);
+        return view('consommation.index', ['site'=>$site]);
     }
 
     /**

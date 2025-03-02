@@ -23,8 +23,8 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased" style="display: flex;">
-        @include('navbar')
+    <body class="font-sans antialiased">
+        @yield('navbar')
         <div class="min-h-screen bg-gray-100">
 
 
@@ -38,7 +38,7 @@
             @endif
 
             <!-- Page Content -->
-            <main class="flex justify-center">
+            <main class="flex justify-center" >
                 <div class="w-[80%]">
                     @yield('content')
                 </div>

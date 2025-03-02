@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
-    public function getclients()
+    public function getclients(Site $site)
     {
         $clients = Client::with('site')->get();
-        return view('clients.index', compact('clients'));
+        return view('clients.index', compact('clients'),['site'=>$site]);
     }
     public function index(Site $site)
     {

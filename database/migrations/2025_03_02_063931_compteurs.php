@@ -13,13 +13,9 @@ return new class extends Migration
     {
         Schema::create('compteurs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_client');
-            $table->string('numero')->unique();
-            $table->integer('nouvel_index');
-            $table->date('date_compteur');
+            $table->string('prix_par_index');
+            $table->string('frais_compteur');
             $table->timestamps();
-
-            $table->foreign('id_client')->references('id')->on('clients')->onDelete('cascade');
         });
     }
 

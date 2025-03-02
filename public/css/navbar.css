@@ -62,6 +62,7 @@
     font-family: "Poppins", serif;;
     overflow: hidden;
     user-select: none;
+    float: left;
 
      /* Supprime la superposition */
     z-index: 10; /* S'assure qu'elle est au-dessus mais sans recouvrir le contenu */
