@@ -4,18 +4,18 @@
 <!-- partial:index.partial.html -->
 <div id="nav-bar">
   <input id="nav-toggle" type="checkbox"/>
-  <div id="nav-header"><a id="nav-title" target="_blank">C<i class="fab fa-codepen"></i>DEPEN</a>
+  <div id="nav-header"><a id="nav-title" target="_blank">MIHARINDRANO</a> 
     <label for="nav-toggle"><span id="nav-toggle-burger"></span></label>
     <hr/>
   </div>
   <div id="nav-content">
-    <a class="nav-button" href="{{ route('clients.index',['site'=>$site->id]) }}"><i class="fas fa-palette"></i><span>Client</span></a>
-    <a class="nav-button" href="{{ route('compteur.index',['site'=>$site->id]) }}"><i class="fas fa-palette"></i><span>Compteur/Tarif</span></a>
-    <a class="nav-button" href="{{ route('consommation.index',['site'=>$site->id]) }}"><i class="fas fa-images"></i><span>Consommation</span></a>
-    <a class="nav-button" href="{{ route('facture.index',['site'=>$site->id]) }}"><i class="fas fa-thumbtack"></i><span>Facture</span></a>
+    <a class="nav-button" href="{{ route('clients.index',['site'=>$site->id]) }}"><i class="fas fa-users"></i><span>Client</span></a>
+    <a class="nav-button" href="{{ route('compteur.index',['site'=>$site->id]) }}"><i class="fas fa-faucet"></i><span>Compteur/Tarif</span></a>
+    <a class="nav-button" href="{{ route('consommation.index',['site'=>$site->id]) }}"><i class="fas fa-tint"></i><span>Consommation</span></a>
+    <a class="nav-button" href="{{ route('facture.index',['site'=>$site->id]) }}"><i class="fas fas fa-file-invoice"></i><span>Facture</span></a>
     <hr/>
-    <a class="nav-button" href="{{ route('payement.index',['site'=>$site->id]) }}"><i class="fas fa-heart"></i><span>Payement</span></a>
-    <a class="nav-button" href="{{ route('caisse.index',['site'=>$site->id]) }}"><i class="fas fa-chart-line"></i><span>Caisse</span></a>
+    <a class="nav-button" href="{{ route('payement.index',['site'=>$site->id]) }}"><i class="fas fas fa-file-invoice-dollar"></i><span>Payement</span></a>
+    <a class="nav-button" href="{{ route('caisse.index',['site'=>$site->id]) }}"><i class="fas fa-cash-register"></i><span>Caisse</span></a>
     <div id="nav-content-highlight"></a></div>
   </div>
   <input id="nav-footer-toggle" type="checkbox"/>

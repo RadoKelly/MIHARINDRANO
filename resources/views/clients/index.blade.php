@@ -3,7 +3,7 @@
     @include('navbar')
 @endsection
 @section('content')
-    <div class="container mx-auto px-4 sm:px-6 md:px-8 py-8">
+    <div class="container mx-auto px-4 sm:px-6 md:px-8 py-8 ml-4">
         <!-- Flex container for heading and button -->
         <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Liste des Clients</h1>

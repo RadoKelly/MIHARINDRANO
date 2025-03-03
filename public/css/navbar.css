@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
 
 :root {
-    --background: #f3f4f6; /* Couleur de fond éclaircie */
-    --navbar-width: 256px;
-    --navbar-width-min: 80px;
-    --navbar-dark-primary: #a7c2f0; /* Anciennement foncé, maintenant blanc */
-    --navbar-dark-secondary: #f0f0f5; /* Gris clair pour un effet soft */
-    --navbar-light-primary: #9c88ff; /* Accentué pour rester visible */
-    --navbar-light-secondary: #5a6a85; /* Légèrement foncé pour le contraste */
-  }
+  --background: #f9fafb; /* Gris clair pour éviter un blanc trop agressif */
+  --navbar-width: 256px;
+  --navbar-width-min: 80px;
+  --navbar-dark-primary: #eef2f6; /* Gris bleuté très doux pour une meilleure cohérence */
+  --navbar-dark-secondary: #dbe4ee; /* Bleu-gris pastel pour un léger contraste */
+  --navbar-light-primary: #4a90e2; /* Bleu plus profond pour une meilleure visibilité */
+  --navbar-light-secondary: #2c3e50; /* Gris foncé tirant sur le bleu pour un bon contraste */
+}
   
   #nav-toggle:checked ~ #nav-header {
     width: calc(var(--navbar-width-min) - 16px);
@@ -52,8 +52,7 @@
   }
   
   #nav-bar {
-    left: -2vw;
-    height: calc(100% - 2vw);
+    height: 100vh;
     background: var(--navbar-dark-primary);
     border-radius: 16px;
     display: flex;
@@ -63,6 +62,7 @@
     overflow: hidden;
     user-select: none;
     float: left;
+    position: fixed;
 
      /* Supprime la superposition */
     z-index: 10; /* S'assure qu'elle est au-dessus mais sans recouvrir le contenu */
