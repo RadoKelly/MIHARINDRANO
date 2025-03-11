@@ -3,13 +3,14 @@
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SiteController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ClientController;
-use App\Http\Controllers\CompteurController;
-use App\Http\Controllers\ConsommationController;
-use App\Http\Controllers\FactureController;
-use App\Http\Controllers\PayementController;
 use App\Http\Controllers\CaisseController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\TarifsController;
+use App\Http\Controllers\FactureController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CompteurController;
+use App\Http\Controllers\PayementController;
+use App\Http\Controllers\ConsommationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,5 +66,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('sites/{site}/facture', FactureController::class);
     Route::resource('sites/{site}/payement', PayementController::class);
     Route::resource('sites/{site}/caisse', CaisseController::class);
+    Route::resource('sites/{site}/tarifs', TarifsController::class);
+
+    
 
 });
