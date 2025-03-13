@@ -32,11 +32,6 @@
 
     <hr/>
 
-    <a class="nav-button {{ request()->routeIs('payement.index') ? 'active' : '' }}" 
-       href="{{ route('payement.index', ['site' => $site->id]) }}">
-       <i class="fas fa-file-invoice-dollar"></i><span>Payement</span>
-    </a>
-
     <a class="nav-button {{ request()->routeIs('caisse.index') ? 'active' : '' }}" 
        href="{{ route('caisse.index', ['site' => $site->id]) }}">
        <i class="fas fa-cash-register"></i><span>Caisse</span>
