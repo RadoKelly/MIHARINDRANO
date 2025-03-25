@@ -10,11 +10,15 @@
         <!-- ok ok -->
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
         <script src="{{ asset('js/jspdf.umd.min.js') }}"></script>
         <script src="{{ asset('js/jspdf.plugin.autotable.min.js') }}"></script>
         <script src="{{ asset('js/genereteFacture.js') }}"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
         
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
