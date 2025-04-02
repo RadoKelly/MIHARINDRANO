@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Site;
 use App\Models\Tarif;
+use App\Models\Site;
 
 class TarifsController extends Controller
 {
@@ -13,12 +13,10 @@ class TarifsController extends Controller
      */
     public function index(Site $site)
     {
-        // Récupérer les tarifs associés au site
-        $tarifs = Tarif::where('site_id', $site->id)->get();
-
-        return view('tarifs.index', compact('site', 'tarifs'));
+        $tarifs = Tarif::where('site_id', $site->id)->orderBy('date', 'desc')->get();
+        return view('tarifs.index', compact('tarifs', 'site'));
     }
-
+    
     /**
      * Affiche le formulaire de création d'un nouveau tarif.
      */
@@ -33,17 +31,21 @@ class TarifsController extends Controller
     public function store(Request $request, Site $site)
     {
         $request->validate([
-            'nom' => 'required|string|max:255',
-            'prix' => 'required|numeric|min:0',
+            'nom_tarif'         => 'required|string|max:255',
+            'location_compteur' => 'required|string|max:255',
+            'pu_m3_unique'      => 'required|numeric|min:0',
         ]);
 
         Tarif::create([
-            'site_id' => $site->id,
-            'nom' => $request->nom,
-            'prix' => $request->prix,
+            'site_id'           => $site->id,
+            'date'              => now(), // Date automatique
+            'nom_tarif'         => $request->nom_tarif,
+            'location_compteur' => $request->location_compteur,
+            'pu_m3_unique'      => $request->pu_m3_unique,
         ]);
 
-        return redirect()->route('tarifs.index', $site)->with('success', 'Tarif ajouté avec succès.');
+        return redirect()->route('tarifs.index', ['site' => $site->id])
+            ->with('success', 'Tarif ajouté avec succès.');
     }
 
     /**
@@ -51,7 +53,7 @@ class TarifsController extends Controller
      */
     public function edit(Site $site, Tarif $tarif)
     {
-        return view('tarifs.edit', compact('site', 'tarif'));
+        return view('tarifs.edit', compact('tarif', 'site'));
     }
 
     /**
@@ -60,16 +62,19 @@ class TarifsController extends Controller
     public function update(Request $request, Site $site, Tarif $tarif)
     {
         $request->validate([
-            'nom' => 'required|string|max:255',
-            'prix' => 'required|numeric|min:0',
+            'nom_tarif'         => 'required|string|max:255',
+            'location_compteur' => 'required|string|max:255',
+            'pu_m3_unique'      => 'required|numeric|min:0',
         ]);
 
         $tarif->update([
-            'nom' => $request->nom,
-            'prix' => $request->prix,
+            'nom_tarif'         => $request->nom_tarif,
+            'location_compteur' => $request->location_compteur,
+            'pu_m3_unique'      => $request->pu_m3_unique,
         ]);
 
-        return redirect()->route('tarifs.index', $site)->with('success', 'Tarif mis à jour avec succès.');
+        return redirect()->route('tarifs.index', ['site' => $site->id])
+            ->with('success', 'Tarif mis à jour avec succès.');
     }
 
     /**
@@ -78,7 +83,7 @@ class TarifsController extends Controller
     public function destroy(Site $site, Tarif $tarif)
     {
         $tarif->delete();
-
-        return redirect()->route('tarifs.index', $site)->with('success', 'Tarif supprimé avec succès.');
+        return redirect()->route('tarifs.index', ['site' => $site->id])
+            ->with('success', 'Tarif supprimé avec succès.');
     }
 }

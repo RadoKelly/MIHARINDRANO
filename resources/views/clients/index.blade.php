@@ -162,5 +162,6 @@
         div.dataTables_wrapper .dataTables_filter {
             margin-bottom: 20px !important;
         }
+
     </style>
 @endsection
