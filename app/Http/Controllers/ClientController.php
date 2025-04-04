@@ -8,6 +8,19 @@ use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+    
+        if (!$query) {
+            return response()->json([]);
+        }
+    
+        $clients = Client::where('nom_client', 'like', '%' . $query . '%')->limit(10)->get(['id', 'nom_client']);
+    
+        return response()->json($clients);
+    }
+
     public function getclients(Site $site)
     {
         $clients = Client::with('site')->get();

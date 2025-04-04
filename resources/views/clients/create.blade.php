@@ -25,8 +25,39 @@
 
             <div class="mb-4">
                 <label for="categorie" class="block text-gray-700 text-sm font-bold mb-2">Catégorie:</label>
-                <input type="text" name="categorie" id="categorie" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" required>
+                <input type="hidden" name="tarif_id" id="tarif_id">
+                <select name="categorie" id="categorie" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                    <option value="kiosque_eau">Kiosques à eau</option>
+                    <option value="branchements_partages">Branchements partagés</option>
+                    <option value="branchements_privés">Branchements privés</option>
+                    <option value="equivalents_service_public">Equivalents service public</option>
+                </select>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const categorieSelect = document.getElementById('categorie');
+                        const tarifIdInput = document.getElementById('tarif_id');
+                
+                        const categorieTarifMap = {
+                            'kiosque_eau': 1,              // compteur 1
+                            'branchements_partages': 2,    // compteur 2
+                            'branchements_privés': 3,      // compteur 3
+                            'equivalents_service_public': 4 // compteur 4
+                        };
+                
+                        // Mettre à jour automatiquement le champ tarif_id
+                        categorieSelect.addEventListener('change', function () {
+                            const selectedCategorie = categorieSelect.value;
+                            tarifIdInput.value = categorieTarifMap[selectedCategorie] || '';
+                        });
+                
+                        // Déclencher la première fois pour préremplir si besoin
+                        categorieSelect.dispatchEvent(new Event('change'));
+                    });
+                </script>
+                
             </div>
+
+            <input type="hidden" name="tarif_id" id="tarif_id">
 
             <div class="mb-4">
                 <label for="date_raccordement" class="block text-gray-700 text-sm font-bold mb-2">Date de raccordement:</label>

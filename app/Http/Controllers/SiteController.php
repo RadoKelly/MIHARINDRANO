@@ -48,6 +48,8 @@ class SiteController extends Controller
      */
     public function show(Site $site)
     {
+        // Charger les clients associés au site
+        $site = Site::with('clients')->find($site->id);
         return view('sites.show', compact('site'));
     }
 

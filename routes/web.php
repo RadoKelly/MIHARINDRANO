@@ -62,11 +62,17 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('sites/{site}/clients', ClientController::class);
     Route::resource('sites/{site}/compteur', CompteurController::class);
+    Route::get('sites/{site}/compteur/create', [CompteurController::class, 'create'])->name('sites.compteur.create');
+    Route::post('sites/{site}/compteur', [CompteurController::class, 'store'])->name('compteurs.store');
     Route::resource('sites/{site}/consommation', ConsommationController::class);
     Route::resource('sites/{site}/facture', FactureController::class);
     Route::resource('sites/{site}/payement', PayementController::class);
     Route::resource('sites/{site}/caisse', CaisseController::class);
     Route::resource('sites/{site}/tarifs', TarifsController::class);
+
+
+     // Ajoute cette route pour la recherche des clients
+     Route::get('clients/search', [ClientController::class, 'search'])->name('clients.search');
 
     
 

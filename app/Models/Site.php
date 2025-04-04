@@ -17,9 +17,9 @@ class Site extends Model
         'responsable',
         'date_debut_etape',
     ];
-    public function client()
+    public function clients()
     {
-        return $this->hasOne(Client::class, 'id_site');
+        return $this->hasMany(Client::class, 'id_site');
     }
 }
 

@@ -17,12 +17,12 @@
 
     <a class="nav-button {{ request()->routeIs('compteur.index') ? 'active' : '' }}" 
        href="{{ route('compteur.index', ['site' => $site->id]) }}">
-       <i class="fas fa-faucet"></i><span>Compteur/Tarif</span>
+       <i class="fas fa-faucet"></i><span>Compteur</span>
     </a>
 
     <a class="nav-button {{ request()->routeIs('consommation.index') ? 'active' : '' }}" 
-       href="{{ route('consommation.index', ['site' => $site->id]) }}">
-       <i class="fas fa-tint"></i><span>Consommation</span>
+       href="{{ route('tarifs.index', ['site' => $site->id]) }}">
+       <i class="fas fa-tint"></i><span>Tarifs</span>
     </a>
 
     <a class="nav-button {{ request()->routeIs('facture.index') ? 'active' : '' }}" 
