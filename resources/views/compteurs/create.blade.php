@@ -11,10 +11,9 @@
                 @csrf
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 
+                    <!-- Recherche client -->
                     <div class="col-span-1 relative">
                         <label for="client_search" class="block text-sm font-medium text-gray-700">Nom Client</label>
-
-                        <!-- Champ de recherche -->
                         <input type="text" id="client_search" name="client_search"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                             placeholder="Recherchez un client..." autocomplete="off">
@@ -27,10 +26,12 @@
 
                         <!-- Champ caché pour l'ID du client -->
                         <input type="hidden" id="client_id" name="client_id" required>
+
+                        <!-- Champ caché pour le tarif_id -->
+                        <input type="hidden" id="tarif_id" name="tarif_id" required>
                     </div>
 
-
-
+                    <!-- Date du Relevé -->
                     <div class="col-span-1">
                         <label for="date_releve" class="block text-sm font-medium text-gray-700">Date du Relevé</label>
                         <input type="date" id="date_releve" name="date_releve"
@@ -38,13 +39,7 @@
                             required>
                     </div>
 
-                    <div class="col-span-1">
-                        <label for="numero_facture" class="block text-sm font-medium text-gray-700">N° Facture</label>
-                        <input type="text" id="numero_facture" name="numero_facture"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-                            required>
-                    </div>
-
+                    <!-- Nouvel Index -->
                     <div class="col-span-1">
                         <label for="nouvel_index" class="block text-sm font-medium text-gray-700">Nouvel Index</label>
                         <input type="number" id="nouvel_index" name="nouvel_index"
@@ -52,12 +47,12 @@
                             required>
                     </div>
 
+                    <!-- Tarif (Lecture seule) -->
                     <div class="col-span-1">
-                        <label for="tarif_id" class="block text-sm font-medium text-gray-700">Tarif</label>
-                        <input type="text" id="tarif_id" name="tarif_id"
+                        <label for="tarif" class="block text-sm font-medium text-gray-700">Tarif</label>
+                        <input type="text" id="tarif" name="tarif" 
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-                            placeholder="ID du tarif (test)" required>
-
+                            placeholder="Le tarif sera automatiquement défini" disabled>
                     </div>
                 </div>
 
@@ -70,6 +65,7 @@
             </form>
         </div>
     </div>
+
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -80,7 +76,6 @@
         </div>
     @endif
 
-
     <style>
         #client_results {
             position: absolute;
@@ -90,8 +85,6 @@
             border: 1px solid #ccc;
             background-color: white;
             z-index: 9999;
-            /* Assurez-vous que le z-index est plus élevé que les autres éléments */
-
         }
 
         #client_results li {
@@ -104,79 +97,61 @@
         }
     </style>
 
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('client_search');
             const clientResults = document.getElementById('client_results');
             const clientIdInput = document.getElementById('client_id');
-            const form = document.querySelector('form'); // Sélectionne le formulaire pour la soumission
-
-            // Affichage dans la console pour vérifier le chargement du script
-            // console.log('Script chargé avec succès !');
+            const tarifInput = document.getElementById('tarif');
+            const tarifIdInput = document.getElementById('tarif_id');
+            const form = document.querySelector('form');
 
             searchInput.addEventListener('input', function() {
                 const query = searchInput.value.trim();
-                console.log('Saisie utilisateur :', query); // Vérifie la saisie
-
-                // Si la saisie est inférieure à 2 caractères, ne pas lancer la recherche
                 if (query.length < 2) {
-                    clientResults.classList.add('hidden'); // Masquer les résultats si moins de 2 caractères
+                    clientResults.classList.add('hidden');
                     return;
                 }
-
-                // console.log('Lancement de la recherche...');
 
                 // Requête AJAX pour récupérer les clients correspondants
                 fetch("{{ route('clients.search') }}?query=" + query)
                     .then(response => response.json())
                     .then(data => {
-                        console.log('Réponse reçue :', data); // Vérifie les données retournées
-                        clientResults.innerHTML = ''; // Réinitialiser la liste
-
+                        clientResults.innerHTML = '';
                         if (data.length === 0) {
                             clientResults.innerHTML = '<li class="p-2">Aucun client trouvé</li>';
-                            clientResults.classList.remove('hidden'); // Afficher la liste
+                            clientResults.classList.remove('hidden');
                             return;
                         }
 
-                        // Réinitialiser et ajouter les résultats à la liste déroulante
-                        clientResults.classList.remove('hidden'); // Afficher la liste
+                        clientResults.classList.remove('hidden');
 
                         data.forEach(client => {
                             const li = document.createElement('li');
                             li.textContent = client.nom_client;
                             li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
 
-                            // Ajouter un événement de sélection d'un client
                             li.addEventListener('click', function() {
-                                searchInput.value = client
-                                    .nom_client; // Mettre à jour le champ de recherche
-                                clientIdInput.value = client
-                                    .id; // Mettre à jour l'ID du client caché
-                                console.log('ID du client sélectionné:', clientIdInput
-                                    .value);
-                                clientResults.classList.add(
-                                    'hidden'); // Masquer la liste après la sélection
+                                searchInput.value = client.nom_client;
+                                clientIdInput.value = client.id;
+                                tarifInput.value = "Compteur : " + client.tarif_id;  // Mise à jour du tarif affiché
+                                tarifInput.placeholder = "Tarif : " + client.tarif_id; // Affichage du tarif dans le placeholder
+                                tarifIdInput.value = client.tarif_id;  // Mise à jour du tarif_id caché
+                                clientResults.classList.add('hidden');
                             });
 
-                            clientResults.appendChild(li); // Ajouter chaque client à la liste
+                            clientResults.appendChild(li);
                         });
                     })
                     .catch(error => {
-                        console.error('Erreur AJAX:', error); // Log de l'erreur si la requête échoue
+                        console.error('Erreur AJAX:', error);
                     });
             });
 
-
-
-
-            // Optionnel : Vérification du client_id lors de la soumission du formulaire
             form.addEventListener('submit', function(event) {
-                console.log("client_id avant soumission:", clientIdInput.value); // Affiche l'ID du client
                 if (!clientIdInput.value) {
                     alert("Veuillez sélectionner un client.");
-                    event.preventDefault(); // Empêcher la soumission si aucun client n'est sélectionné
+                    event.preventDefault();
                 }
             });
         });

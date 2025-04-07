@@ -19,7 +19,8 @@ class Compteur extends Model
         'ancien_index',
         'nouvel_index',
         'prix_par_index',
-        'frais_compteur'
+        'frais_compteur',
+        'consommation',
     ];
 
     // 🔗 Relation avec Client
@@ -35,7 +36,7 @@ class Compteur extends Model
     }
 
     // 🔗 Relation avec Tarif (optionnelle si tu veux l’utiliser plus tard)
-    public function tarif()
+    public function tarifs()
     {
         return $this->belongsTo(Tarif::class);
     }

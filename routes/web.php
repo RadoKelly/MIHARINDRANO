@@ -53,7 +53,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Routes d'authentification (connexion, inscription, etc.)
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 Route::middleware('auth')->group(function () {
     Route::resource('sites', SiteController::class);
@@ -71,9 +71,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('sites/{site}/tarifs', TarifsController::class);
 
 
-     // Ajoute cette route pour la recherche des clients
-     Route::get('clients/search', [ClientController::class, 'search'])->name('clients.search');
+    // Ajoute cette route pour la recherche des clients
+    Route::get('clients/search', [ClientController::class, 'search'])->name('clients.search');
 
-    
+    // Route pour accéder à l'édition d'un compteur pour un site spécifique
+    Route::get('sites/{site}/compteur/{compteur}/edit', [CompteurController::class, 'edit'])->name('sites.compteur.edit');
+
+    // Route pour détruire un compteur pour un site spécifique
+    Route::delete('sites/{site}/compteur/{compteur}', [CompteurController::class, 'destroy'])->name('sites.compteur.destroy');
+
+    Route::put('sites/{site}/compteur/{compteur}', [CompteurController::class, 'update'])->name('sites.compteur.update');
 
 });
