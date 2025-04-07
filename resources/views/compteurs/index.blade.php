@@ -33,11 +33,11 @@
                 @foreach ($compteurs as $compteur)
                     <tr>
                         <td class="p-2 sm:p-3 text-center">{{ $compteur->id }}</td>
-                        <td class="p-2 sm:p-3 text-center">{{ $compteur->client->nom }}</td>
+                        <td class="p-2 sm:p-3 text-center">{{ $compteur->client ? $compteur->client->nom_client : 'Client introuvable' }}</td>
                         <td class="p-2 sm:p-3 text-center">{{ $compteur->date_releve }}</td>
                         <td class="p-2 sm:p-3 text-center">{{ $compteur->ancien_date }}</td>
                         <td class="p-2 sm:p-3 text-center">{{ $compteur->numero_facture }}</td>
-                        <td class="p-2 sm:p-3 text-center">{{ $compteur->tarif->nom }}</td>
+                        <td class="p-2 sm:p-3 text-center">{{ $compteur->tarif_id }}</td>
                         <td class="p-2 sm:p-3 text-center">{{ $compteur->ancien_index }}</td>
                         <td class="p-2 sm:p-3 text-center">{{ $compteur->nouvel_index }}</td>
                         <td class="p-2 sm:p-3 text-center">{{ $compteur->consommation }}</td>

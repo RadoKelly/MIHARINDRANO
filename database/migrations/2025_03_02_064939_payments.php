@@ -16,8 +16,6 @@ return new class extends Migration
             $table->unsignedBigInteger('id_consommation');
             $table->string('montant_payement');
             $table->timestamps();
-
-            $table->foreign('id_consommation')->references('id')->on('consommations')->onDelete('cascade');
         });
     }
 

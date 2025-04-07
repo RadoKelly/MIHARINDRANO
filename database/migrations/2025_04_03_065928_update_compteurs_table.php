@@ -11,17 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('compteurs', function (Blueprint $table) {
-            // Ajout des nouvelles colonnes
-            $table->foreignId('site_id')->constrained()->onDelete('cascade'); // Associe le compteur à un site
-            $table->foreignId('client_id')->constrained()->onDelete('cascade'); // Associe le compteur à un client
-            $table->date('date_releve'); // Date du relevé
-            $table->date('ancien_date')->nullable(); // Ancienne date du relevé
-            $table->string('numero_facture')->nullable(); // Numéro de facture
-            $table->foreignId('tarif_id')->constrained()->onDelete('cascade'); // Tarif appliqué
-            $table->decimal('ancien_index', 10, 2)->default(0); // Ancien index du compteur
-            $table->decimal('nouvel_index', 10, 2)->default(0); // Nouvel index du compteur
-            $table->decimal('consommation', 10, 2)->virtualAs('nouvel_index - ancien_index'); // Calcul automatique
+        Schema::create('compteurs', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('site_id')->nullable(); // champ simple
+            $table->foreignId('client_id')->constrained()->onDelete('cascade'); // relation client uniquement
+            $table->date('date_releve');
+            $table->date('ancien_date')->nullable();
+            $table->string('numero_facture')->nullable();
+            $table->unsignedBigInteger('tarif_id')->nullable(); // champ simple (pas de foreign)
+            $table->decimal('ancien_index', 10, 2)->default(0);
+            $table->decimal('nouvel_index', 10, 2)->default(0);
+            $table->decimal('consommation', 10, 2)->default(0);
+            $table->decimal('prix_par_index', 10, 2)->nullable();
+            $table->decimal('frais_compteur', 10, 2)->nullable();
+            $table->timestamps();
         });
     }
 
@@ -30,11 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('compteurs', function (Blueprint $table) {
-            $table->dropColumn([
-                'site_id', 'client_id', 'date_releve', 'ancien_date', 'numero_facture',
-                'tarif_id', 'ancien_index', 'nouvel_index', 'consommation'
-            ]);
-        });
+        Schema::dropIfExists('compteurs');
     }
 };

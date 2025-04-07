@@ -21,4 +21,22 @@ class Compteur extends Model
         'prix_par_index',
         'frais_compteur'
     ];
+
+    // 🔗 Relation avec Client
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    // 🔗 Relation avec Site
+    public function site()
+    {
+        return $this->belongsTo(Site::class);
+    }
+
+    // 🔗 Relation avec Tarif (optionnelle si tu veux l’utiliser plus tard)
+    public function tarif()
+    {
+        return $this->belongsTo(Tarif::class);
+    }
 }

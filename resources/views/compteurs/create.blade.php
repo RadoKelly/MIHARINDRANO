@@ -54,12 +54,10 @@
 
                     <div class="col-span-1">
                         <label for="tarif_id" class="block text-sm font-medium text-gray-700">Tarif</label>
-                        <select id="tarif_id" name="tarif_id"
+                        <input type="text" id="tarif_id" name="tarif_id"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-                            required>
-                            <option value="">Sélectionnez un tarif</option>
-                            <option value="1">compteur 1</option>
-                        </select>
+                            placeholder="ID du tarif (test)" required>
+
                     </div>
                 </div>
 
@@ -155,7 +153,7 @@
                                 searchInput.value = client
                                     .nom_client; // Mettre à jour le champ de recherche
                                 clientIdInput.value = client
-                                .id; // Mettre à jour l'ID du client caché
+                                    .id; // Mettre à jour l'ID du client caché
                                 console.log('ID du client sélectionné:', clientIdInput
                                     .value);
                                 clientResults.classList.add(
