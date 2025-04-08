@@ -82,4 +82,7 @@ Route::middleware('auth')->group(function () {
 
     Route::put('/site/{site}/compteurs/{compteur}', [CompteurController::class, 'update'])->name('compteurs.update');
 
+    Route::get('/compteurs/filter', [CompteurController::class, 'getFilteredCompteurs'])->name('compteurs.filter');
+
+
 });

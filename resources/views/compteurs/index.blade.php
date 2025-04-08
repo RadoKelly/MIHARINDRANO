@@ -11,13 +11,52 @@
     <div class="container mx-auto px-4 sm:px-6 md:px-8 py-8">
         <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Relevé Consommations Clients</h1>
-            <div class="flex mt-4 sm:mt-0 space-x-3">
+            
+        </div>
+
+        <div class="flex items-center justify-between gap-4 mb-4">
+            <!-- Filtres à gauche -->
+            <div class="flex items-center gap-4">
+                <!-- Filtre Année -->
+                <div class="relative">
+                    <label for="filterYear" class="block text-sm font-medium text-gray-700">Année</label>
+                    <select id="filterYear"
+                        class="block w-36 px-4 py-2 mt-1 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">années ...</option>
+                        @foreach (range(date('Y'), 2020) as $year)
+                            <option value="{{ $year }}">{{ $year }}</option>
+                        @endforeach
+                    </select>
+                </div>
+        
+                <!-- Filtre Mois -->
+                <div class="relative">
+                    <label for="filterMonth" class="block text-sm font-medium text-gray-700">Mois</label>
+                    <select id="filterMonth" class="block w-32 px-4 py-2 mt-1 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">mois ...</option>
+                        @php
+                            // Définir la locale en français
+                            setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR', 'fr');
+                        @endphp
+                        @foreach (range(1, 12) as $month)
+                            <option value="{{ str_pad($month, 2, '0', STR_PAD_LEFT) }}">
+                                {{ strftime('%B', mktime(0, 0, 0, $month, 1)) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        
+            <!-- Lien Ajouter un Relevé à droite -->
+            <div class="relative ml-auto">
                 <a href="{{ route('sites.compteur.create', $site) }}"
-                    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     Ajouter un Relevé
                 </a>
             </div>
         </div>
+        
+
 
         <div class="overflow-x-auto relative">
             <table id="clients-table" class="min-w-full divide-y divide-gray-200 shadow-md rounded-lg">
@@ -147,7 +186,8 @@
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                     </div>
                     <div>
-                        <label for="nouveau_index" class="block text-gray-700 text-sm font-bold mb-2">Nouveau Index</label>
+                        <label for="nouveau_index" class="block text-gray-700 text-sm font-bold mb-2">Nouveau
+                            Index</label>
                         <input type="number" id="editNouveauIndex" name="nouveau_index"
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                     </div>
@@ -195,7 +235,7 @@
     </script>
 
     <!-- Initialisation DataTables -->
-    <script>
+    {{-- <script>
         $(document).ready(function() {
             $('#clients-table').DataTable({
                 paging: true,
@@ -219,7 +259,7 @@
                 }
             });
         });
-    </script>
+    </script> --}}
 
     <!-- Script de recherche dynamique (si nécessaire) -->
     <script>
@@ -267,8 +307,82 @@
         });
     </script>
 
+    <script>
+        $(document).ready(function() {
+            const table = $('#clients-table').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                lengthChange: true,
+                info: true,
+                language: {
+                    lengthMenu: "Afficher _MENU_ clients par page",
+                    zeroRecords: "Aucun client trouvé",
+                    info: "Affichage de la page _PAGE_ sur _PAGES_",
+                    infoEmpty: "Aucun client trouvé",
+                    infoFiltered: "(filtré à partir de _MAX_ clients)",
+                    search: "Recherche:",
+                    paginate: {
+                        first: "Premier",
+                        last: "Dernier",
+                        next: "Suivant",
+                        previous: "Précédent"
+                    }
+                }
+            });
+
+            // Fonction pour appliquer les filtres année et mois
+            function applyFilters() {
+                const selectedYear = $('#filterYear').val();
+                const selectedMonth = $('#filterMonth').val();
+
+                table.rows().every(function() {
+                    const row = this.node();
+                    const dateCell = $(row).find('td').eq(
+                        2); // La colonne de la date (index 2 si c'est la troisième colonne)
+
+                    if (dateCell.length > 0) {
+                        const rowDate = new Date(dateCell.text()
+                            .trim()); // On suppose que la date est au format 'YYYY-MM-DD'
+                        const rowYear = rowDate.getFullYear();
+                        const rowMonth = rowDate.getMonth() +
+                            1; // Le mois est un indice 0-11, donc on ajoute 1
+
+                        const matchesYear = selectedYear ? rowYear === parseInt(selectedYear) : true;
+                        const matchesMonth = selectedMonth ? rowMonth === parseInt(selectedMonth) : true;
+
+                        // Applique les filtres
+                        if (matchesYear && matchesMonth) {
+                            $(row).show();
+                        } else {
+                            $(row).hide();
+                        }
+                    }
+                });
+            }
+
+            // Événements de changement pour les filtres d'année et de mois
+            $('#filterYear').on('change', function() {
+                applyFilters();
+            });
+
+            $('#filterMonth').on('change', function() {
+                applyFilters();
+            });
+
+        });
+    </script>
+
+
     <!-- Styles personnalisés -->
     <style>
+        /* Option de survol */
+        select:hover {
+            border-color: #4B8BF5;
+            /* Couleur bleue pour l'option hover */
+        }
+
+
         #client_results {
             position: absolute;
             width: 100%;

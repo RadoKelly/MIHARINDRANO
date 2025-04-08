@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Log;
 use App\Models\Site;
 use App\Models\Compteur;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
+
 
 class CompteurController extends Controller
 {
@@ -34,68 +35,69 @@ class CompteurController extends Controller
         return view('compteurs.create', compact('site', 'clients', 'tarifs'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request, Site $site)
     {
-        // dd($request->all()); 
-        // Validation des données du formulaire
-        $request->validate([
-            'client_id' => 'required|exists:clients,id',
-            'date_releve' => 'required|date',
-            'nouvel_index' => 'required|numeric|min:0',
-            'tarif_id' => 'nullable',
-        ]);
-
-        // Récupérer le dernier relevé pour le client
+        // Récupérer le dernier relevé pour le client sur ce site
         $dernierReleve = Compteur::where('client_id', $request->client_id)
             ->where('site_id', $site->id)
             ->orderBy('date_releve', 'desc')
             ->first();
 
-        // Déterminer l'ancien index pour le calcul de la consommation
+        // Validation des données du formulaire
+        $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'date_releve' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) use ($dernierReleve) {
+                    if ($dernierReleve && $value <= $dernierReleve->date_releve) {
+                        $fail("La date du relevé doit être postérieure à la dernière date de relevé ({$dernierReleve->date_releve->format('d/m/Y')}).");
+                    }
+                }
+            ],
+            'nouvel_index' => [
+                'required',
+                'numeric',
+                'min:0',
+                function ($attribute, $value, $fail) use ($dernierReleve) {
+                    if ($dernierReleve && $value <= $dernierReleve->nouvel_index) {
+                        $fail("Le nouvel index doit être supérieur à l'index précédent ({$dernierReleve->nouvel_index}).");
+                    }
+                }
+            ],
+            'tarif_id' => 'nullable',
+        ]);
+
+        // Déterminer l'ancien index
         $ancien_index = $dernierReleve ? $dernierReleve->nouvel_index : 0;
 
-        // Calcul de la consommation
+        // Calcul consommation
         $consommation = $request->nouvel_index - $ancien_index;
 
-        // Étape 1 : Construire le préfixe (numéro du site)
-        $prefix = str_pad($site->numero_site, 3, '0', STR_PAD_LEFT); // Assure que le numéro du site est toujours sur 3 chiffres
-
-        // Étape 2 : Extraire l'année et le mois du relevé (utiliser la date du relevé envoyée dans la requête)
-        $releveDate = $request->date_releve; // La date du relevé envoyée par le formulaire
-        $yearMonth = \Carbon\Carbon::parse($releveDate)->format('Ym'); // Formate la date au format "YYYYMM"
-
-        // Étape 3 : Calculer l'incrément pour le client donné
-        $increment = Compteur::where('client_id', $request->client_id) // Trouve tous les relevés pour ce client
-            ->count() + 1; // Incrémentation par rapport au nombre de relevés déjà existants
-
-        $incrementFormatted = str_pad($increment, 3, '0', STR_PAD_LEFT);  // Formatage de l'incrément avec 3 chiffres
-
-        // Étape 4 : Générer le numéro de facture final
+        // Génération du numéro de facture
+        $prefix = str_pad($site->numero_site, 3, '0', STR_PAD_LEFT);
+        $yearMonth = \Carbon\Carbon::parse($request->date_releve)->format('Ym');
+        $increment = Compteur::where('client_id', $request->client_id)->count() + 1;
+        $incrementFormatted = str_pad($increment, 3, '0', STR_PAD_LEFT);
         $numero_facture_auto = "{$prefix} {$incrementFormatted} {$yearMonth}";
 
-
-        // dd($ancien_index, $request->nouvel_index, $consommation);
-
-        // Enregistrer le nouveau relevé de compteur
+        // Création du nouveau compteur
         Compteur::create([
             'site_id' => $site->id,
             'client_id' => $request->client_id,
             'date_releve' => $request->date_releve,
-            'ancien_date' => now()->subMonth(),  // Exemple : 1 mois avant
+            'ancien_date' => $dernierReleve ? $dernierReleve->date_releve : null,
             'numero_facture' => $numero_facture_auto,
             'tarif_id' => $request->tarif_id,
-            'ancien_index' => $ancien_index,  // L'ancien index est celui du dernier relevé
+            'ancien_index' => $ancien_index,
             'nouvel_index' => $request->nouvel_index,
-            'consommation' => $consommation,  // La consommation est calculée ici
+            'consommation' => $consommation,
         ]);
 
-        // Si le relevé a bien été ajouté, rediriger vers la liste des relevés
         return redirect()->route('compteur.index', [$site])
             ->with('success', 'Relevé ajouté avec succès.');
     }
+
 
 
     /**
@@ -117,11 +119,11 @@ class CompteurController extends Controller
                 'min:0',
             ],
         ]);
-    
+
         // Calcul de la consommation basée sur la différence entre l'**ancien index** et le **nouveau index**
         // On calcule la consommation à partir de l'ancien index, indépendamment de si le nouveau index est plus petit ou plus grand.
         $calculConsommation = $request->nouveau_index - $compteur->ancien_index;
-    
+
         // Mise à jour du relevé existant
         $compteur->update([
             // Mise à jour de la date du relevé
@@ -133,14 +135,14 @@ class CompteurController extends Controller
             // La consommation est recalculée en fonction de l'**ancien index**
             'consommation'  => $calculConsommation,
         ]);
-    
+
         // Si tu as une soumission AJAX, retourne une réponse JSON pour mettre à jour la ligne dans le tableau
         // return response()->json($compteur);
-    
+
         // Redirection vers l'index avec un message de succès
         return redirect()->route('compteur.index', $site)->with('success', 'Relevé mis à jour avec succès.');
     }
-                    
+
 
     /**
      * Show the form for editing the specified resource.
@@ -167,5 +169,25 @@ class CompteurController extends Controller
         // Rediriger vers la liste des compteurs du site avec un message de succès
         return redirect()->route('compteur.index', $site)
             ->with('success', 'Le relevé de compteur a été supprimé avec succès.');
+    }
+
+
+    // Dans ton contrôleur CompteurController.php
+
+    public function getFilteredCompteurs(Request $request)
+    {
+        $compteurs = Compteur::query();
+
+        if ($request->has('year')) {
+            $compteurs->whereYear('date_releve', $request->year);
+        }
+
+        if ($request->has('month')) {
+            $compteurs->whereMonth('date_releve', $request->month);
+        }
+
+        $compteurs = $compteurs->get();
+
+        return response()->json($compteurs);
     }
 }
