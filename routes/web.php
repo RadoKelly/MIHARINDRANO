@@ -58,7 +58,7 @@ require __DIR__ . '/auth.php';
 Route::middleware('auth')->group(function () {
     Route::resource('sites', SiteController::class);
     Route::get('/clients/{client}/compteurs', [ClientController::class, 'getCompteurs']);
-    Route::put('/compteurs/{id}', [CompteurController::class, 'update'])->name('compteurs.update');
+    // Route::put('/compteurs/{id}', [CompteurController::class, 'update'])->name('compteurs.update');
 
     Route::resource('sites/{site}/clients', ClientController::class);
     Route::resource('sites/{site}/compteur', CompteurController::class);
@@ -80,6 +80,6 @@ Route::middleware('auth')->group(function () {
     // Route pour détruire un compteur pour un site spécifique
     Route::delete('sites/{site}/compteur/{compteur}', [CompteurController::class, 'destroy'])->name('sites.compteur.destroy');
 
-    Route::put('sites/{site}/compteur/{compteur}', [CompteurController::class, 'update'])->name('sites.compteur.update');
+    Route::put('/site/{site}/compteurs/{compteur}', [CompteurController::class, 'update'])->name('compteurs.update');
 
 });

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Compteur;
+use Log;
 use App\Models\Site;
+use App\Models\Compteur;
 use Illuminate\Http\Request;
 
 class CompteurController extends Controller
@@ -106,30 +107,40 @@ class CompteurController extends Controller
     }
 
     public function update(Request $request, Site $site, Compteur $compteur)
-{
-    // Validation des données envoyées par le formulaire
-    $request->validate([
-        'client_id' => 'required|exists:clients,id',
-        'date_releve' => 'required|date',
-        'nouvel_index' => 'required|numeric|min:0',
-        
-    ]);
-
-    // Mettre à jour les champs du relevé
-    $compteur->update([
-        'client_id' => $request->client_id,
-        'date_releve' => $request->date_releve,
-        'ancien_date' => now()->subMonth(),  // Exemple : 1 mois avant
-        // 'tarif_id' => $request->tarif_id,
-        'ancien_index' => $compteur->nouvel_index, // L'ancien index est celui du dernier relevé
-        'nouvel_index' => $request->nouvel_index,
-        'consommation' => $request->nouvel_index - $compteur->nouvel_index, // Calcul de la consommation
-    ]);
-
-    // Rediriger avec un message de succès
-    return redirect()->route('compteur.index', $site)->with('success', 'Relevé mis à jour avec succès.');
-}
-
+    {
+        // Validation des données envoyées par le formulaire
+        $request->validate([
+            'date_releve' => 'required|date',
+            'nouveau_index' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
+        ]);
+    
+        // Calcul de la consommation basée sur la différence entre l'**ancien index** et le **nouveau index**
+        // On calcule la consommation à partir de l'ancien index, indépendamment de si le nouveau index est plus petit ou plus grand.
+        $calculConsommation = $request->nouveau_index - $compteur->ancien_index;
+    
+        // Mise à jour du relevé existant
+        $compteur->update([
+            // Mise à jour de la date du relevé
+            'date_releve'   => $request->date_releve,
+            // L'**ancien index** reste inchangé
+            'ancien_index'  => $compteur->ancien_index,  // Ne pas modifier l'ancien index
+            // Mise à jour du **nouvel index** avec la valeur du formulaire
+            'nouvel_index'  => $request->nouveau_index,
+            // La consommation est recalculée en fonction de l'**ancien index**
+            'consommation'  => $calculConsommation,
+        ]);
+    
+        // Si tu as une soumission AJAX, retourne une réponse JSON pour mettre à jour la ligne dans le tableau
+        // return response()->json($compteur);
+    
+        // Redirection vers l'index avec un message de succès
+        return redirect()->route('compteur.index', $site)->with('success', 'Relevé mis à jour avec succès.');
+    }
+                    
 
     /**
      * Show the form for editing the specified resource.
