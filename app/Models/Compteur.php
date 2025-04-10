@@ -21,6 +21,7 @@ class Compteur extends Model
         'prix_par_index',
         'frais_compteur',
         'consommation',
+        'prix_total',
     ];
 
     // 🔗 Relation avec Client

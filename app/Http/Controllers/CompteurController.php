@@ -81,6 +81,15 @@ class CompteurController extends Controller
         $incrementFormatted = str_pad($increment, 3, '0', STR_PAD_LEFT);
         $numero_facture_auto = "{$prefix} {$incrementFormatted} {$yearMonth}";
 
+        $frais_compteur = 500;
+
+        // Récupérer le client et son tarif associé
+        $client = \App\Models\Client::findOrFail($request->client_id);
+        $tarif = $client->tarif;
+
+        $prix_par_index = $consommation * $tarif->pu_m3_unique;
+        $prix_total = $prix_par_index + $frais_compteur;
+
         // Création du nouveau compteur
         Compteur::create([
             'site_id' => $site->id,
@@ -92,7 +101,11 @@ class CompteurController extends Controller
             'ancien_index' => $ancien_index,
             'nouvel_index' => $request->nouvel_index,
             'consommation' => $consommation,
+            'frais_compteur' => $frais_compteur,
+            'prix_par_index' => $prix_par_index,
+            'prix_total' => $prix_total,
         ]);
+
 
         return redirect()->route('compteur.index', [$site])
             ->with('success', 'Relevé ajouté avec succès.');

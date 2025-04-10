@@ -12,6 +12,9 @@ use App\Http\Controllers\CompteurController;
 use App\Http\Controllers\PayementController;
 use App\Http\Controllers\ConsommationController;
 
+
+use Barryvdh\DomPDF\Facade as PDF;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -85,4 +88,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/compteurs/filter', [CompteurController::class, 'getFilteredCompteurs'])->name('compteurs.filter');
 
 
+
+
+    
+
+    Route::get('/test-pdf', [FactureController::class, 'testPDF']);
 });
