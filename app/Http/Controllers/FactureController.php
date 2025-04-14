@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Dompdf\Dompdf;
-use Dompdf\Options;
 use App\Models\Site;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 use App\Models\Compteur;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Exception\RequestException;
 
 class FactureController extends Controller
 {
@@ -27,39 +29,36 @@ class FactureController extends Controller
     }
 
 
-    public function testPDF()
+
+
+
+    public function generateFacturePDF()
     {
-        // Créer une instance de Dompdf
-        $options = new Options();
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isPhpEnabled', true);
-        $dompdf = new Dompdf($options);
+        $html = view('facture.index')->render();
 
-        // Contenu HTML simple pour le PDF
-        $html = '
-            <html>
-                <head>
-                    <title>Test PDF</title>
-                </head>
-                <body>
-                    <h1 style="text-align:center;">Ceci est un test de Dompdf</h1>
-                    <p style="text-align:center;">Si vous voyez ce texte dans un PDF, alors Dompdf fonctionne !</p>
-                </body>
-            </html>
-        ';
+        $client = new Client();
 
-        // Charger le HTML dans Dompdf
-        $dompdf->loadHtml($html);
+        try {
+            $response = $client->post('https://api.pdfshift.io/v3/convert/pdf', [
+                'json' => [
+                    'source' => $html,
+                    'sandbox' => true,
+                ],
+                'headers' => [
+                    'Authorization' => 'Basic ' . base64_encode('api:' . config('services.pdfshift.api_key')),
+                ],
+            ]);
 
-        // (Optional) Définir la taille du papier A4
-        $dompdf->setPaper('A4', 'portrait'); // Orientation portrait
+            $pdfContent = $response->getBody()->getContents();
 
-        // Rendre le PDF
-        $dompdf->render();
-
-        // Afficher le PDF dans le navigateur
-        return $dompdf->stream('test-pdf.pdf', [
-            'Attachment' => 0 // 0 pour afficher dans le navigateur, 1 pour forcer le téléchargement
-        ]);
+            return response($pdfContent)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="facture.pdf"');
+        } catch (RequestException $e) {
+            // \Log::error('Erreur PDFShift : ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Impossible de générer le PDF. Veuillez réessayer.',
+            ], 500);
+        }
     }
 }

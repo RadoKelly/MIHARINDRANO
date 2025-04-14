@@ -55,6 +55,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+
 // Routes d'authentification (connexion, inscription, etc.)
 require __DIR__ . '/auth.php';
 
@@ -92,5 +94,6 @@ Route::middleware('auth')->group(function () {
 
     
 
-    Route::get('/test-pdf', [FactureController::class, 'testPDF']);
+Route::get('/facture/pdf', [FactureController::class, 'generateFacturePDF'])->name('facture.pdf');
+
 });

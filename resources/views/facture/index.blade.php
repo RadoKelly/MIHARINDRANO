@@ -6,6 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FAKTIORA - Format Paysage</title>
     <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            .page,
+            .page * {
+                visibility: visible;
+            }
+
+            .page {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+
+            html,
+            body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        }
+
         /* Styles généraux */
         body {
             font-family: Arial, sans-serif;
@@ -73,42 +104,47 @@
 
         /* Section client */
         .client-info {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin: 20px 0;
-    padding: 10px 0;
-    border-top: 2px solid #333;
-    border-bottom: 2px solid #333;
-}
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 10px 0;
+            border-top: 2px solid #333;
+            border-bottom: 2px solid #333;
+        }
 
-.client-left, .client-right {
-    display: flex;
-    flex-direction: column;
-    width: 48%; /* Prendre environ la moitié de la largeur */
-}
+        .client-left,
+        .client-right {
+            display: flex;
+            flex-direction: column;
+            width: 48%;
+            /* Prendre environ la moitié de la largeur */
+        }
 
-.row {
-    display: flex;
-    margin-bottom: 10px;/* Alignement vertical centré */
-}
+        .row {
+            display: flex;
+            margin-bottom: 10px;
+            /* Alignement vertical centré */
+        }
 
-.row-label {
-    width: 30%; /* Largeur du label */
-    font-weight: bold;
-    text-align: left;
-}
+        .row-label {
+            width: 30%;
+            /* Largeur du label */
+            font-weight: bold;
+            text-align: left;
+        }
 
-.row-value {
-    width: 70%; /* Largeur de la valeur */
-}
+        .row-value {
+            width: 70%;
+            /* Largeur de la valeur */
+        }
 
-.input-box {
-    display: inline-block;
-    padding: 5px;
-    border: 1px solid #ddd;
-    width: 100%;
-}
+        .input-box {
+            display: inline-block;
+            padding: 5px;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
 
 
         .client-left {
@@ -211,182 +247,189 @@
 
 
         /* Header */
-.header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px; /* Ajouter un peu plus d'espace sous l'en-tête */
-    padding: 10px;
-}
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            /* Ajouter un peu plus d'espace sous l'en-tête */
+            padding: 10px;
+        }
 
-.company-info {
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    padding-right: 10px; /* Espacement à droite */
-}
+        .company-info {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            padding-right: 10px;
+            /* Espacement à droite */
+        }
 
-.company-info h1 {
-    font-size: 14px;
-    margin: 0;
-    font-weight: bold;
-}
+        .company-info h1 {
+            font-size: 14px;
+            margin: 0;
+            font-weight: bold;
+        }
 
-.company-info p {
-    font-size: 10px; /* Plus petit pour les informations supplémentaires */
-    margin: 4px 0;
-}
+        .company-info p {
+            font-size: 10px;
+            /* Plus petit pour les informations supplémentaires */
+            margin: 4px 0;
+        }
 
-.faktiora-header {
-    width: 45%; /* Ajuster la largeur pour une meilleure proportion */
-    text-align: right;
-    padding-left: 10px; /* Espacement à gauche */
-}
+        .faktiora-header {
+            width: 45%;
+            /* Ajuster la largeur pour une meilleure proportion */
+            text-align: right;
+            padding-left: 10px;
+            /* Espacement à gauche */
+        }
 
-.faktiora-header h1 {
-    font-size: 16px;
-    font-weight: bold;
-    margin: 0;
-}
+        .faktiora-header h1 {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0;
+        }
 
-.row {
-    display: flex;
-    margin-bottom: 6px; /* Espacement un peu plus grand entre les lignes */
-    justify-content: flex-end; /* Aligner les champs à droite */
-}
+        .row {
+            display: flex;
+            margin-bottom: 6px;
+            /* Espacement un peu plus grand entre les lignes */
+            justify-content: flex-end;
+            /* Aligner les champs à droite */
+        }
 
-.row-label {
-    width: 40%; /* Ajuster la largeur pour les labels */
-    font-weight: bold;
-}
+        .row-label {
+            width: 40%;
+            /* Ajuster la largeur pour les labels */
+            font-weight: bold;
+        }
 
-.row-value {
-    width: 60%; /* Ajuster la largeur pour les valeurs */
-    text-align: right;
-}
+        .row-value {
+            width: 60%;
+            /* Ajuster la largeur pour les valeurs */
+            text-align: right;
+        }
 
-.input-box {
-    padding: 5px;
-    border: 1px solid #ddd;
-    width: 100%;
-    font-size: 11px;
-}
+        .input-box {
+            padding: 5px;
+            border: 1px solid #ddd;
+            width: 100%;
+            font-size: 11px;
+        }
 
-.main-table {
-    display: flex;
-    flex-direction: column;
-    font-size: 13px;
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 4px; /* Espace entre cellules */
-}
+        .main-table {
+            display: flex;
+            flex-direction: column;
+            font-size: 13px;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 4px;
+            /* Espace entre cellules */
+        }
 
-/* En-têtes (thead) */
-.thead {
-    display: flex;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 4px;
-}
+        /* En-têtes (thead) */
+        .thead {
+            display: flex;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 4px;
+        }
 
-.thead > div {
-    flex: 1;
-    padding: 4px 6px;
-}
+        .thead>div {
+            flex: 1;
+            padding: 4px 6px;
+        }
 
-/* Ligne de données */
-.row {
-    display: flex;
-    gap: 5px;
-}
+        /* Ligne de données */
+        .row {
+            display: flex;
+            gap: 5px;
+        }
 
-/* Première colonne (libellés) */
-.label {
-    flex: 1;
-    font-weight: bold;
-    padding: 4px 6px;
-    border: none;
-}
+        /* Première colonne (libellés) */
+        .label {
+            flex: 1;
+            font-weight: bold;
+            padding: 4px 6px;
+            border: none;
+        }
 
-/* Cellules de valeur */
-.cell {
-    flex: 1;
-    border: 1px solid #ddd;
-    padding: 1px 5px;
-    text-align: right;
-    font-size: 10px; 
-}
+        /* Cellules de valeur */
+        .cell {
+            flex: 1;
+            border: 1px solid #ddd;
+            padding: 1px 5px;
+            text-align: right;
+            font-size: 10px;
+        }
 
-.faktiora-section {
-    display: flex;
-    gap: 40px;
-    margin-top: 20px;
-}
+        .faktiora-section {
+            display: flex;
+            gap: 40px;
+            margin-top: 20px;
+        }
 
-table {
-    border-collapse: separate;
-    border-spacing: 0 4px;
-    font-size: 11px;
-    width: 100%;
-    max-width: 300px;
-}
+        table {
+            border-collapse: separate;
+            border-spacing: 0 4px;
+            font-size: 11px;
+            width: 100%;
+            max-width: 300px;
+        }
 
-th {
-    text-align: left;
-    font-weight: bold;
-    padding-bottom: 6px;
-    background: none;
-    border: none;
-}
+        th {
+            text-align: left;
+            font-weight: bold;
+            padding-bottom: 6px;
+            background: none;
+            border: none;
+        }
 
-td.label {
-    font-weight: bold;
-    text-align: left;
-    padding-right: 10px;
-    border: none;
-    width: 60%;
-}
+        td.label {
+            font-weight: bold;
+            text-align: left;
+            padding-right: 10px;
+            border: none;
+            width: 60%;
+        }
 
-td.value-cell {
-    border: 1px solid #ddd;
-    padding: 1px 5px;
-    width: 40%;
-    text-align: right;
-}
+        td.value-cell {
+            border: 1px solid #ddd;
+            padding: 1px 5px;
+            width: 40%;
+            text-align: right;
+        }
 
-.footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-    padding-top: 10px;
-}
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 10px;
+        }
 
-.footer-left,
-.footer-right {
-    width: 48%;
-}
+        .footer-left,
+        .footer-right {
+            width: 48%;
+        }
 
-.footer-left p,
-.footer-right p {
-    margin: 0;
-    font-size: 11px;
-}
+        .footer-left p,
+        .footer-right p {
+            margin: 0;
+            font-size: 11px;
+        }
 
-.footer-right p {
-    text-align: right;
-}
+        .footer-right p {
+            text-align: right;
+        }
 
-.footer-right em {
-    font-style: italic;
-}
-
-
-
-
+        .footer-right em {
+            font-style: italic;
+        }
     </style>
 </head>
 
 <body>
-    <div class="page">
+    <button id="generate-pdf">Exporter en PDF</button>
+    <div class="page" id="invoice">
         <!-- FACTURE GAUCHE -->
         <div class="facture-gauche">
             <!-- En-tête -->
@@ -457,7 +500,7 @@ td.value-cell {
                     <div>Marika vaovao</div>
                     <div>Fandaniana (m3)</div>
                 </div>
-            
+
                 <!-- Première section -->
                 <div class="row">
                     <div class="label">Marika</div>
@@ -465,14 +508,14 @@ td.value-cell {
                     <div class="cell">1,000</div>
                     <div class="cell">0,000</div>
                 </div>
-            
+
                 <div class="row">
                     <div class="label">Daty nanamarihana</div>
                     <div class="cell">09/08/2024</div>
                     <div class="cell">06/09/2024</div>
                     <div class="cell"></div>
                 </div>
-            
+
                 <!-- Thead 2 -->
                 <div class="thead">
                     <div></div>
@@ -480,7 +523,7 @@ td.value-cell {
                     <div>Vidiny (Ar)</div>
                     <div>Fitambarany (Ar)</div>
                 </div>
-            
+
                 <!-- Deuxième section -->
                 <div class="row">
                     <div class="label">Ampahany voalohan</div>
@@ -488,14 +531,14 @@ td.value-cell {
                     <div class="cell"></div>
                     <div class="cell"></div>
                 </div>
-            
+
                 <div class="row">
                     <div class="label">Ampahany faharoa</div>
                     <div class="cell">0,000</div>
                     <div class="cell"></div>
                     <div class="cell"></div>
                 </div>
-            
+
                 <div class="row">
                     <div class="label">Totaly</div>
                     <div class="cell">0,000</div>
@@ -503,9 +546,9 @@ td.value-cell {
                     <div class="cell">0,00</div>
                 </div>
             </div>
-            
-            
-            
+
+
+
 
             <!-- Section totaux -->
             <div class="faktiora-section">
@@ -534,7 +577,7 @@ td.value-cell {
                         </tr>
                     </tbody>
                 </table>
-            
+
                 <table class="table-ketra">
                     <thead>
                         <tr>
@@ -561,8 +604,8 @@ td.value-cell {
                     </tbody>
                 </table>
             </div>
-            
-             <!-- Pied de page -->
+
+            <!-- Pied de page -->
             <div class="footer">
                 <div class="footer-left">
                     <p><strong>Daty fetra fandoavana:</strong> 18/10/2024</p>
@@ -571,182 +614,42 @@ td.value-cell {
                     <p><em>Arrêté la présente facture à la somme de deux mille trois cents Ariary</em></p>
                 </div>
             </div>
-            
 
-           
 
-        </div>
 
-        <!-- FACTURE DROITE -->
-        <div class="facture-droite">
-            <!-- En-tête -->
-            <div class="header">
-                <div class="company-info">
-                    <h1>ENTREPRISE MIHARINDRANO</h1>
-                    <p>3001076425</p>
-                    <p>Foibe: Lot II F 291 Ambano</p>
-                    <p>Famatsian-drano: <strong>VINANINKARENA</strong></p>
-                </div>
-                <div class="faktiora-header">
-                    <h1>FAKTIORA</h1>
-                    <div class="row">
-                        <div class="row-label">Volana</div>
-                        <div class="row-value">
-                            <div class="input-box">Septembre/2024</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="row-label">Daty</div>
-                        <div class="row-value">03/10/2024</div>
-                    </div>
-                    <div class="row">
-                        <div class="row-label">Faktiora n°</div>
-                        <div class="row-value">3 056 202409</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Informations client -->
-            <div class="client-info">
-                <div class="client-left">
-                    <div class="row">
-                        <div class="row-label">Referansa</div>
-                        <div class="row-value">
-                            <div class="input-box">479 ABT 056</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="row-label">Mpanjifa</div>
-                        <div class="row-value">
-                            <div class="input-box">Rasoaniandrina Lys Adèle</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="client-right">
-                    <div class="row">
-                        <div class="row-label">N° kaontera</div>
-                        <div class="row-value">
-                            <div class="input-box">70462827</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="row-label">Lazam-bidy</div>
-                        <div class="row-value">
-                            <div class="input-box">COMPTEUR 1</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contenu principal -->
-            <div class="main-content">
-                <div class="left-column">
-                    <div class="label bold-label">Marika teo aloha</div>
-                    <div class="input-box">3,000</div>
-                    <div class="label">Daty nanamarihana</div>
-                    <div class="input-box">09/08/2024</div>
-                    <div class="label bold-label">Habetsaka m3</div>
-                    <div class="label">Ampahany voalohan</div>
-                    <div class="input-box"></div>
-                    <div class="label">Ampahany faharoa</div>
-                    <div class="input-box">0,000</div>
-                    <div class="label">Totaly</div>
-                    <div class="input-box">1,000</div>
-                </div>
-                <div class="middle-column">
-                    <div class="label bold-label">Marika vaovao</div>
-                    <div class="input-box">4,000</div>
-                    <div class="label">Daty nanamarihana</div>
-                    <div class="input-box">06/09/2024</div>
-                    <div class="label bold-label">Vidiny (Ar)</div>
-                    <div class="input-box"></div>
-                    <div class="input-box"></div>
-                    <div class="input-box"></div>
-                    <div class="input-box">1 800,00</div>
-                </div>
-                <div class="right-column">
-                    <div class="label bold-label">Fandaniana (m3)</div>
-                    <div class="input-box">1,000</div>
-                    <div class="label"></div>
-                    <div class="input-box"></div>
-                    <div class="label bold-label">Fitambarany (Ar)</div>
-                    <div class="input-box">0,00</div>
-                    <div class="input-box">0,00</div>
-                    <div class="input-box"></div>
-                    <div class="input-box">1 800,00</div>
-                </div>
-            </div>
-
-            <!-- Section totaux -->
-            <div class="totals">
-                <div class="left-totals">
-                    <div class="label bold-label">Sarany samihafa</div>
-                    <div class="row">
-                        <div class="row-label">Hofan'ny kaontera</div>
-                        <div class="row-value">500,00</div>
-                    </div>
-                    <div class="row">
-                        <div class="row-label">Sarany tsy miova</div>
-                        <div class="row-value"></div>
-                    </div>
-                    <div class="row">
-                        <div class="row-label">Prime fixe</div>
-                        <div class="row-value"></div>
-                    </div>
-                    <div class="row">
-                        <div class="row-label">Sarany hafa</div>
-                        <div class="row-value"></div>
-                    </div>
-                    <div class="row">
-                        <div class="row-label">Ny Tompon'andraikitra</div>
-                        <div class="row-value"></div>
-                    </div>
-
-                </div>
-                <div class="right-totals">
-                    <div class="label bold-label">Karazan-ketra</div>
-                    <div class="row">
-                        <div class="row-label">Hetra kaominaly</div>
-                        <div class="row-value">0,00</div>
-                    </div>
-                    <div class="row">
-                        <div class="row-label">Hetra Hafa</div>
-                        <div class="row-value">0,00</div>
-                    </div>
-                    <div class="row">
-                        <div class="row-label">Hetra FNRE (8Ar/m3)</div>
-                        <div class="row-value">0,00</div>
-                    </div>
-                    <div class="row">
-                        <div class="row-label">TVA (>10 m3)</div>
-                        <div class="row-value">0,00</div>
-                    </div>
-                    <div class="row">
-                        <div class="row-label">Faktiora Septembre/2024</div>
-                        <div class="row-value">2 300,00</div>
-                    </div>
-                    <div class="row">
-                        <div class="row-label">Ambiny tsy voaloa teo aloha</div>
-                        <div class="row-value">0,00</div>
-                    </div>
-                    <div class="row">
-                        <div class="row-label"><strong>Vola aloa (Ar)</strong></div>
-                        <div class="row-value"><strong>2 300,00</strong></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="row-label">Daty fefra fandoavana</div>
-                <div class="row-value">18/10/2024</div>
-            </div>
-            <div class="row">
-                <div class="row-label">Arrêté la présente facture à la somme de</div>
-                <div class="row-value">deux mille trois cents Ariary</div>
-            </div>
 
         </div>
     </div>
+
+    <div id="simple-invoice">
+        <h1>Facture</h1>
+        <p>Montant: 100€</p>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+
+
+    <script>
+        document.getElementById("generate-pdf").addEventListener("click", function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+    
+            // Capture de l'élément HTML
+            doc.html(document.getElementById("simple-invoice"), {
+                callback: function (doc) {
+                    // Sauvegarder le fichier PDF
+                    doc.save("facture.pdf");
+                },
+                margin: 10,
+                x: 10,
+                y: 10
+            });
+        });
+    </script>
+
 </body>
 
 </html>
