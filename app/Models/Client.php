@@ -15,9 +15,11 @@ class Client extends Model
         'localite',
         'categorie',
         'date_raccordement',
+        'frais_raccordement',
         'ref',
         'nom_client',
-        'tarif_id',  // Assurez-vous que le champ 'tarif_id' est remplissable
+        'tarif_id', 
+        'numero_compteur',
     ];
 
     public function tarif()

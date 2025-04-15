@@ -47,6 +47,8 @@ class ClientController extends Controller
             'date_raccordement' => 'required|date',
             'ref' => 'required|string|unique:clients,ref',
             'nom_client' => 'required|string|max:255',
+            'frais_raccordement' => 'required|numeric|min:0',
+            'numero_compteur' => 'required|string|max:255',
         ]);
     
         // Déterminer le tarif en fonction de la catégorie

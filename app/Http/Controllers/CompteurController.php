@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Site;
+use GuzzleHttp\Client;
 use App\Models\Compteur;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
+use GuzzleHttp\Exception\RequestException;
 
 
 class CompteurController extends Controller
@@ -203,4 +206,55 @@ class CompteurController extends Controller
 
         return response()->json($compteurs);
     }
+
+    public function generateFacturePDF($site, $compteur)
+    {
+        // Charger le compteur avec ses relations client et tarif
+        $compteur = Compteur::with('client.tarif')->findOrFail($compteur);
+
+        // Rendre la vue facture/index.blade.php avec les données du compteur
+        $html = view('facture.index', compact('compteur'))->render();
+
+        // Initialiser Guzzle pour PDFShift
+        $client = new Client();
+
+        try {
+            $response = $client->post('https://api.pdfshift.io/v3/convert/pdf', [
+                'json' => [
+                    'source' => $html,
+                    'sandbox' => env('APP_ENV') === 'local',
+                ],
+                'headers' => [
+                    'Authorization' => 'Basic ' . base64_encode('api:' . config('services.pdfshift.api_key')),
+                ],
+            ]);
+
+            $pdfContent = $response->getBody()->getContents();
+
+            return response($pdfContent)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'inline; filename="facture_' . $compteur->numero_facture . '.pdf"');
+        } catch (RequestException $e) {
+            Log::error('Erreur PDFShift : ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Impossible de générer le PDF. Veuillez réessayer.',
+            ], 500);
+        }
+    }
+
+    public function facture(Site $site, Compteur $compteur)
+    {
+        $compteur->load('client.tarif');
+    
+        // Exemple : tu prends le total depuis ton compteur (à adapter selon ton modèle)
+        $total = $compteur->prix_total ?? 0;
+    
+        $formatter = new \NumberFormatter('fr', \NumberFormatter::SPELLOUT);
+        $montantEnLettres = ucfirst($formatter->format($total)) . ' Ariary';
+    
+        return view('facture.index', compact('site', 'compteur', 'montantEnLettres'));
+    }
+    
+
+    
 }

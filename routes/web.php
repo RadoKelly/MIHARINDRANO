@@ -96,4 +96,6 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/facture/pdf', [FactureController::class, 'generateFacturePDF'])->name('facture.pdf');
 
+Route::get('/sites/{site}/compteurs/{compteur}/pdf', [CompteurController::class, 'facture'])->name('sites.compteurs.pdf');
+
 });
