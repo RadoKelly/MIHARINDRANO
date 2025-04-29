@@ -98,4 +98,6 @@ Route::get('/facture/pdf', [FactureController::class, 'generateFacturePDF'])->na
 
 Route::get('/sites/{site}/compteurs/{compteur}/pdf', [CompteurController::class, 'facture'])->name('sites.compteurs.pdf');
 
+Route::get('/factures/export', [CompteurController::class, 'exportFacturesFiltrees'])->name('factures.export');
+
 });

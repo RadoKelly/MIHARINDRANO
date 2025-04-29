@@ -11,7 +11,7 @@
     <div class="container mx-auto px-4 sm:px-6 md:px-8 py-8">
         <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Relevé Consommations Clients</h1>
-            
+
         </div>
 
         <div class="flex items-center justify-between gap-4 mb-4">
@@ -28,11 +28,12 @@
                         @endforeach
                     </select>
                 </div>
-        
+
                 <!-- Filtre Mois -->
                 <div class="relative">
                     <label for="filterMonth" class="block text-sm font-medium text-gray-700">Mois</label>
-                    <select id="filterMonth" class="block w-32 px-4 py-2 mt-1 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <select id="filterMonth"
+                        class="block w-32 px-4 py-2 mt-1 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">mois ...</option>
                         @php
                             // Définir la locale en français
@@ -46,16 +47,24 @@
                     </select>
                 </div>
             </div>
-        
+
             <!-- Lien Ajouter un Relevé à droite -->
-            <div class="relative ml-auto">
+            <div class="relative ml-auto flex space-x-2">
+                <!-- Bouton d'exportation -->
+                <a href="#" id="exportButton"
+                    class=" px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ">
+                    Exporter les Factures Filtrées
+                </a>
+
                 <a href="{{ route('sites.compteur.create', $site) }}"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    class="ml-10 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     Ajouter un Relevé
                 </a>
+                
+
             </div>
         </div>
-        
+
 
 
         <div class="overflow-x-auto relative">
@@ -128,9 +137,12 @@
                                         </svg>
                                     </button>
 
-                                    <a href="{{ route('sites.compteurs.pdf', ['site' => $site->id, 'compteur' => $compteur->id]) }}" class="text-blue-500 hover:text-blue-700">    
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                    <a href="{{ route('sites.compteurs.pdf', ['site' => $site->id, 'compteur' => $compteur->id]) }}"
+                                        class="text-blue-500 hover:text-blue-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                                         </svg>
                                     </a>
 
@@ -239,33 +251,6 @@
             document.getElementById('editModal').classList.add('hidden');
         }
     </script>
-
-    <!-- Initialisation DataTables -->
-    {{-- <script>
-        $(document).ready(function() {
-            $('#clients-table').DataTable({
-                paging: true,
-                searching: true,
-                ordering: true,
-                lengthChange: true,
-                info: true,
-                language: {
-                    lengthMenu: "Afficher _MENU_ clients par page",
-                    zeroRecords: "Aucun client trouvé",
-                    info: "Affichage de la page _PAGE_ sur _PAGES_",
-                    infoEmpty: "Aucun client trouvé",
-                    infoFiltered: "(filtré à partir de _MAX_ clients)",
-                    search: "Recherche:",
-                    paginate: {
-                        first: "Premier",
-                        last: "Dernier",
-                        next: "Suivant",
-                        previous: "Précédent"
-                    }
-                }
-            });
-        });
-    </script> --}}
 
     <!-- Script de recherche dynamique (si nécessaire) -->
     <script>
@@ -378,6 +363,18 @@
 
         });
     </script>
+
+<script>
+    document.getElementById('exportButton').addEventListener('click', function() {
+        const annee = document.getElementById('filterYear').value;
+        const mois = document.getElementById('filterMonth').value;
+        if (annee && mois) {
+            window.location.href = `/factures/export?annee=${annee}&mois=${mois}`;
+        } else {
+            alert('Veuillez sélectionner une année et un mois.');
+        }
+    });
+</script>
 
 
     <!-- Styles personnalisés -->
