@@ -1,5 +1,6 @@
 <?php
 
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SiteController;
@@ -7,13 +8,13 @@ use App\Http\Controllers\CaisseController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\TarifsController;
 use App\Http\Controllers\FactureController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CompteurController;
+
+
 use App\Http\Controllers\PayementController;
 use App\Http\Controllers\ConsommationController;
-
-
-use Barryvdh\DomPDF\Facade as PDF;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +50,14 @@ Route::middleware('auth')->group(function () {
         return view('user.dashboard');
     })->name('user.dashboard');
 
+    //routes test
+    Route::get('/pdf', function () {
+        return view('facture.twofacture');
+    })->name('facture.pdf');
+    Route::get('/test-pdf', [InvoiceController::class, 'testPdf']);
+
+
+
     // Gestion du profil utilisateur
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -70,7 +79,6 @@ Route::middleware('auth')->group(function () {
     Route::get('sites/{site}/compteur/create', [CompteurController::class, 'create'])->name('sites.compteur.create');
     Route::post('sites/{site}/compteur', [CompteurController::class, 'store'])->name('compteurs.store');
     Route::resource('sites/{site}/consommation', ConsommationController::class);
-    Route::resource('sites/{site}/facture', FactureController::class);
     Route::resource('sites/{site}/payement', PayementController::class);
     Route::resource('sites/{site}/caisse', CaisseController::class);
     Route::resource('sites/{site}/tarifs', TarifsController::class);
@@ -89,15 +97,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/compteurs/filter', [CompteurController::class, 'getFilteredCompteurs'])->name('compteurs.filter');
 
+    //route menu facture
+    Route::get('/facture/pdf', [InvoiceController::class, 'generatePDF']);
 
+    // Nouvelle route pour l'exportation PDF avec DomPDF
+    Route::get('/sites/{site}/compteurs/{compteur}/pdf', [InvoiceController::class, 'generatePDF'])->name('sites.compteurs.pdf.dompdf');
 
-
-    
-
-Route::get('/facture/pdf', [FactureController::class, 'generateFacturePDF'])->name('facture.pdf');
-
-Route::get('/sites/{site}/compteurs/{compteur}/pdf', [CompteurController::class, 'facture'])->name('sites.compteurs.pdf');
-
-Route::get('/factures/export', [CompteurController::class, 'exportFacturesFiltrees'])->name('factures.export');
+    Route::post('/batch-export', [InvoiceController::class, 'batchExport'])->name('invoices.batch-export');
 
 });

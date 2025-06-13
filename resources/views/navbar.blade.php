@@ -26,7 +26,7 @@
     </a>
 
     <a class="nav-button {{ request()->routeIs('facture.index') ? 'active' : '' }}" 
-       href="{{ route('facture.index', ['site' => $site->id]) }}">
+       href="{{ route('facture.pdf', ['site' => $site->id]) }}">
        <i class="fas fa-file-invoice"></i><span>Facture</span>
     </a>
 

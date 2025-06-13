@@ -6,6 +6,7 @@ use App\Models\Site;
 use GuzzleHttp\Client;
 use App\Models\Compteur;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Yajra\DataTables\Facades\DataTables;
@@ -207,156 +208,23 @@ class CompteurController extends Controller
         return response()->json($compteurs);
     }
 
-    public function facture(Site $site, Compteur $compteur)
-    {
-        // Charger les relations nécessaires
-        $compteur->load('client.tarif');
+        public function facture(Site $site, Compteur $compteur)
+        {
+            // Charger les relations nécessaires
+            $compteur->load('client.tarif');
 
-        // Calculer le total et le montant en lettres
-        $total = $compteur->prix_total ?? 0;
-        $formatter = new \NumberFormatter('fr', \NumberFormatter::SPELLOUT);
-        $montantEnLettres = ucfirst($formatter->format($total)) . ' Ariary';
+            // Calculer le total et le montant en lettres
+            $total = $compteur->prix_total ?? 0;
+            $formatter = new \NumberFormatter('fr', \NumberFormatter::SPELLOUT);
+            $montantEnLettres = ucfirst($formatter->format($total)) . ' Ariary';
 
-        // Rendre la vue complète pour extraire le CSS et le fragment
-        $fullHtml = View::make('facture.index', compact('site', 'compteur', 'montantEnLettres'))->render();
+            // Rendre la vue complète pour extraire le CSS et le fragment
+            $fullHtml = View::make('facture.index', compact('site', 'compteur', 'montantEnLettres'))->render();
 
-        // Extraire le contenu des balises <style> du view
-        preg_match_all('/<style[^>]*>([\s\S]*?)<\/style>/', $fullHtml, $styleMatches);
-        $embeddedCss = '';
-        if (!empty($styleMatches[1])) {
-            $embeddedCss = implode("\n", $styleMatches[1]);
+
+            // Générer le PDF avec Dompdf
+         
         }
-        // Override pour PDFShift : supprimer fond gris et forcer fond blanc
-        $embeddedCss .= "
-html, body { background: none !important; margin:0; padding:0;} .page { background: white !important; }";
-
-        // Extraire le fragment #invoice
-        libxml_use_internal_errors(true);
-        $dom = new \DOMDocument();
-        $dom->loadHTML(mb_convert_encoding($fullHtml, 'HTML-ENTITIES', 'UTF-8'));
-        libxml_clear_errors();
-        $xpath = new \DOMXPath($dom);
-        $nodes = $xpath->query('//*[@id="invoice"]');
-        $fragment = $nodes->length ? $dom->saveHTML($nodes->item(0)) : $fullHtml;
-
-        // Construire le HTML minimal avec CSS embarqué
-        $html = '<!DOCTYPE html>'
-              . '<html><head><meta charset="UTF-8"><style>'
-              . $embeddedCss
-              . '</style></head><body>'
-              . $fragment
-              . '</body></html>';
-
-        // Appel à PDFShift via Guzzle
-        $client = new Client();
-        try {
-            $response = $client->post('https://api.pdfshift.io/v3/convert/pdf', [
-                'json' => [
-                    'source'    => $html,
-                    'format'    => 'A4',
-                    'landscape' => true,
-                    'sandbox'   => false,
-                ],
-                'headers' => [
-                    'Authorization' => 'Basic ' . base64_encode('api:' . config('services.pdfshift.api_key')),
-                    'Content-Type'  => 'application/json',
-                ],
-                'timeout' => 60,
-            ]);
-
-            $pdfContent = $response->getBody()->getContents();
-            return response($pdfContent)
-                ->header('Content-Type', 'application/pdf')
-                ->header('Content-Disposition', 'inline; filename="facture_' . ($compteur->numero_facture ?? 'facture') . '.pdf"');
-
-        } catch (RequestException $e) {
-            Log::error('Erreur PDFShift : ' . $e->getMessage());
-            return response()->json([
-                'error' => 'Impossible de générer le PDF. Veuillez réessayer ultérieurement.',
-            ], 500);
-        }
-    }
 
 
-    public function exportFacturesFiltrees(Request $request)
-{
-// Récupérer les filtres depuis la requête
-$annee = $request->input('annee');
-$mois = $request->input('mois');
-
-// Charger les factures filtrées avec leurs relations
-$compteurs = Compteur::with('client.tarif')
-    ->whereYear('date_releve', $annee)
-    ->whereMonth('date_releve', $mois)
-    ->get();
-
-    // dd($compteurs);
-
-// Vérifier si des factures existent
-if ($compteurs->isEmpty()) {
-    return response()->json(['error' => 'Aucune facture trouvée pour les filtres sélectionnés.'], 404);
-}
-
-// Calculer le montant en lettres pour chaque facture
-$montantEnLettres = [];
-$formatter = new \NumberFormatter('fr', \NumberFormatter::SPELLOUT);
-foreach ($compteurs as $compteur) {
-    $total = $compteur->prix_total ?? 0;
-    $montantEnLettres[$compteur->id] = ucfirst($formatter->format($total)) . ' Ariary';
-}
-
-// Générer le HTML pour toutes les factures
-$fullHtml = View::make('facture.multiple', compact('compteurs', 'montantEnLettres'))->render();
-
-// Extraire les styles CSS du HTML
-preg_match_all('/<style[^>]*>([\s\S]*?)<\/style>/', $fullHtml, $styleMatches);
-$embeddedCss = !empty($styleMatches[1]) ? implode("\n", $styleMatches[1]) : '';
-// Ajouter des styles spécifiques pour PDFShift
-$embeddedCss .= "
-html, body { background: none !important; margin:0; padding:0;} 
-.page { background: white !important; page-break-after: always; }";
-
-// Utiliser le HTML complet comme fragment
-$fragment = $fullHtml;
-
-// Construire le HTML final avec CSS embarqué
-$html = '<!DOCTYPE html>'
-      . '<html><head><meta charset="UTF-8"><style>'
-      . $embeddedCss
-      . '</style></head><body>'
-      . $fragment
-      . '</body></html>';
-
-// Appeler PDFShift pour générer le PDF
-$client = new Client();
-try {
-    $response = $client->post('https://api.pdfshift.io/v3/convert/pdf', [
-        'json' => [
-            'source'    => $html,
-            'format'    => 'A4',
-            'landscape' => true,
-            'sandbox'   => false,
-        ],
-        'headers' => [
-            'Authorization' => 'Basic ' . base64_encode('api:' . config('services.pdfshift.api_key')),
-            'Content-Type'  => 'application/json',
-        ],
-        'timeout' => 60,
-    ]);
-
-    $pdfContent = $response->getBody()->getContents();
-    return response($pdfContent)
-        ->header('Content-Type', 'application/pdf')
-        ->header('Content-Disposition', 'inline; filename="factures_' . $annee . '_' . $mois . '.pdf"');
-
-} catch (RequestException $e) {
-    Log::error('Erreur PDFShift : ' . $e->getMessage());
-    return response()->json([
-        'error' => 'Impossible de générer le PDF. Veuillez réessayer ultérieurement.',
-    ], 500);
-}
-}
-
-
-    
 }

@@ -11,7 +11,6 @@
     <div class="container mx-auto px-4 sm:px-6 md:px-8 py-8">
         <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Relevé Consommations Clients</h1>
-
         </div>
 
         <div class="flex items-center justify-between gap-4 mb-4">
@@ -36,7 +35,6 @@
                         class="block w-32 px-4 py-2 mt-1 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">mois ...</option>
                         @php
-                            // Définir la locale en français
                             setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR', 'fr');
                         @endphp
                         @foreach (range(1, 12) as $month)
@@ -48,24 +46,21 @@
                 </div>
             </div>
 
-            <!-- Lien Ajouter un Relevé à droite -->
+            <!-- Boutons à droite -->
             <div class="relative ml-auto flex space-x-2">
-                <!-- Bouton d'exportation -->
-                <a href="#" id="exportButton"
-                    class=" px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ">
+                <!-- Bouton d'exportation en lot -->
+                <button id="exportButton"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     Exporter les Factures Filtrées
-                </a>
+                </button>
 
+                <!-- Bouton Ajouter un Relevé -->
                 <a href="{{ route('sites.compteur.create', $site) }}"
-                    class="ml-10 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     Ajouter un Relevé
                 </a>
-                
-
             </div>
         </div>
-
-
 
         <div class="overflow-x-auto relative">
             <table id="clients-table" class="min-w-full divide-y divide-gray-200 shadow-md rounded-lg">
@@ -105,21 +100,33 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @foreach ($compteurs as $compteur)
-                        <tr>
+                        <tr data-site-id="{{ $compteur->site_id }}" data-compteur-id="{{ $compteur->id }}">
                             <td class="px-4 py-1 text-sm text-gray-700 text-center">{{ $compteur->id }}</td>
                             <td class="px-4 py-1 text-sm text-gray-700 text-center">
                                 {{ $compteur->client ? $compteur->client->nom_client : 'Client introuvable' }}
                             </td>
                             <td class="px-4 py-1 text-sm text-gray-700 text-center">{{ $compteur->date_releve }}</td>
-                            <td class="px-4 py-1 text-sm text-gray-700 text-center">{{ $compteur->ancien_date }}</td>
-                            <td class="px-4 py-1 text-sm text-gray-700 text-center">{{ $compteur->numero_facture }}</td>
-                            <td class="px-4 py-1 text-sm text-gray-700 text-center">{{ $compteur->tarif_id }}</td>
-                            <td class="px-4 py-1 text-sm text-gray-700 text-center">{{ $compteur->ancien_index }}</td>
-                            <td class="px-4 py-1 text-sm text-gray-700 text-center">{{ $compteur->nouvel_index }}</td>
-                            <td class="px-4 py-1 text-sm text-gray-700 text-center">{{ $compteur->consommation }}</td>
+                            <td class="px-4 py-1 text-sm text-gray-700 text-center">
+                                {{ $compteur->getInvoiceData()['ancien_date'] }}
+                            </td>
+                            <td class="px-4 py-1 text-sm text-gray-700 text-center">
+                                {{ $compteur->getInvoiceData()['numero_facture'] }}
+                            </td>
+                            <td class="px-4 py-1 text-sm text-gray-700 text-center">
+                                {{ $compteur->client && $compteur->client->tarif ? $compteur->client->tarif->nom_tarif : 'N/A' }}
+                            </td>
+                            <td class="px-4 py-1 text-sm text-gray-700 text-center">
+                                {{ $compteur->getInvoiceData()['ancien_index'] }}
+                            </td>
+                            <td class="px-4 py-1 text-sm text-gray-700 text-center">
+                                {{ $compteur->getInvoiceData()['nouvel_index'] }}
+                            </td>
+                            <td class="px-4 py-1 text-sm text-gray-700 text-center">
+                                {{ $compteur->getInvoiceData()['consommation'] }}
+                            </td>
                             <td class="px-4 py-1 text-sm text-gray-700 text-center">
                                 <div class="flex justify-center space-x-2">
-                                    <!-- Bouton d'édition avec passage de données via JSON -->
+                                    <!-- Bouton d'édition -->
                                     <button class="text-yellow-500 hover:text-yellow-700"
                                         onclick='openEditModal({{ json_encode([
                                             'id' => $compteur->id,
@@ -127,9 +134,8 @@
                                             'date_releve' => $compteur->date_releve,
                                             'ancien_index' => $compteur->ancien_index,
                                             'nouveau_index' => $compteur->nouvel_index,
-                                            'tarif' => $compteur->tarif_id,
+                                            'tarif' => $compteur->client && $compteur->client->tarif ? $compteur->client->tarif->nom_tarif : 'N/A',
                                         ]) }})'>
-                                        <!-- Icône d'édition -->
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -137,7 +143,8 @@
                                         </svg>
                                     </button>
 
-                                    <a href="{{ route('sites.compteurs.pdf', ['site' => $site->id, 'compteur' => $compteur->id]) }}"
+                                    <!-- Bouton d'exportation individuelle -->
+                                    <a href="{{ route('sites.compteurs.pdf.dompdf', ['site' => $site->id, 'compteur' => $compteur->id]) }}"
                                         class="text-blue-500 hover:text-blue-700">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
@@ -146,7 +153,7 @@
                                         </svg>
                                     </a>
 
-                                    <!-- Formulaire de suppression -->
+                                    <!-- Bouton de suppression -->
                                     <form
                                         action="{{ route('sites.compteur.destroy', ['site' => $compteur->site_id, 'compteur' => $compteur->id]) }}"
                                         method="POST"
@@ -154,7 +161,6 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700">
-                                            <!-- Icône de suppression -->
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                                 viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -171,7 +177,7 @@
         </div>
     </div>
 
-    <!-- Modal d'édition pour la modification limitée (seuls date du relevé et nouveau index modifiables) -->
+    <!-- Modal d'édition -->
     <div id="editModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 hidden">
         <div class="bg-white p-8 rounded shadow-lg w-1/3 relative">
             <h2 class="text-xl font-bold mb-4">Modifier le Relevé</h2>
@@ -204,8 +210,7 @@
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                     </div>
                     <div>
-                        <label for="nouveau_index" class="block text-gray-700 text-sm font-bold mb-2">Nouveau
-                            Index</label>
+                        <label for="nouveau_index" class="block text-gray-700 text-sm font-bold mb-2">Nouveau Index</label>
                         <input type="number" id="editNouveauIndex" name="nouveau_index"
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                     </div>
@@ -227,9 +232,8 @@
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
     <script>
-        // Fonction pour ouvrir la modal avec les données du compteur
+        // Fonction pour ouvrir la modal
         function openEditModal(compteur) {
-            // Remplir le champ caché d'ID et afficher les informations
             document.getElementById('editCompteurId').value = compteur.id;
             document.getElementById('displayNomClient').textContent = compteur.nom_client;
             document.getElementById('displayAncienIndex').textContent = compteur.ancien_index;
@@ -237,68 +241,18 @@
             document.getElementById('editDateReleve').value = compteur.date_releve;
             document.getElementById('editNouveauIndex').value = compteur.nouveau_index;
 
-            // Mettre à jour l'attribut action du formulaire avec le bon préfixe (sites et compteur)
             var formAction = "{{ url('sites/' . $site->id . '/compteur') }}" + "/" + compteur.id;
             document.getElementById('editForm').action = formAction;
 
-            // Afficher le modal
             document.getElementById('editModal').classList.remove('hidden');
         }
-
 
         // Fonction pour fermer la modal
         function closeEditModal() {
             document.getElementById('editModal').classList.add('hidden');
         }
-    </script>
 
-    <!-- Script de recherche dynamique (si nécessaire) -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('client_search');
-            const clientResults = document.getElementById('client_results');
-
-            searchInput.addEventListener('input', function() {
-                const query = searchInput.value.trim();
-                if (query.length < 2) {
-                    clientResults.classList.add('hidden');
-                    return;
-                }
-
-                // Requête AJAX pour récupérer les clients correspondants
-                fetch("{{ route('clients.search') }}?query=" + query)
-                    .then(response => response.json())
-                    .then(data => {
-                        clientResults.innerHTML = '';
-                        if (data.length === 0) {
-                            clientResults.innerHTML = '<li class="p-2">Aucun client trouvé</li>';
-                            clientResults.classList.remove('hidden');
-                            return;
-                        }
-
-                        clientResults.classList.remove('hidden');
-
-                        data.forEach(client => {
-                            const li = document.createElement('li');
-                            li.textContent = client.nom_client;
-                            li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
-
-                            li.addEventListener('click', function() {
-                                searchInput.value = client.nom_client;
-                                clientResults.classList.add('hidden');
-                            });
-
-                            clientResults.appendChild(li);
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Erreur AJAX:', error);
-                    });
-            });
-        });
-    </script>
-
-    <script>
+        // DataTables et filtres
         $(document).ready(function() {
             const table = $('#clients-table').DataTable({
                 paging: true,
@@ -329,20 +283,16 @@
 
                 table.rows().every(function() {
                     const row = this.node();
-                    const dateCell = $(row).find('td').eq(
-                        2); // La colonne de la date (index 2 si c'est la troisième colonne)
+                    const dateCell = $(row).find('td').eq(2); // Colonne date_releve (index 2)
 
                     if (dateCell.length > 0) {
-                        const rowDate = new Date(dateCell.text()
-                            .trim()); // On suppose que la date est au format 'YYYY-MM-DD'
+                        const rowDate = new Date(dateCell.text().trim());
                         const rowYear = rowDate.getFullYear();
-                        const rowMonth = rowDate.getMonth() +
-                            1; // Le mois est un indice 0-11, donc on ajoute 1
+                        const rowMonth = rowDate.getMonth() + 1;
 
                         const matchesYear = selectedYear ? rowYear === parseInt(selectedYear) : true;
                         const matchesMonth = selectedMonth ? rowMonth === parseInt(selectedMonth) : true;
 
-                        // Applique les filtres
                         if (matchesYear && matchesMonth) {
                             $(row).show();
                         } else {
@@ -352,60 +302,61 @@
                 });
             }
 
-            // Événements de changement pour les filtres d'année et de mois
-            $('#filterYear').on('change', function() {
-                applyFilters();
-            });
+            // Événements de changement pour les filtres
+            $('#filterYear, #filterMonth').on('change', applyFilters);
 
-            $('#filterMonth').on('change', function() {
-                applyFilters();
-            });
+            // Gestion du bouton d’exportation en lot
+            $('#exportButton').click(function(e) {
+                e.preventDefault(); // Empêcher la redirection par défaut
 
+                // Collecter les IDs des compteurs visibles
+                let compteurIds = [];
+                $('#clients-table tbody tr:visible').each(function() {
+                    let siteId = $(this).data('site-id');
+                    let compteurId = $(this).data('compteur-id');
+                    if (siteId && compteurId) {
+                        compteurIds.push({ site_id: siteId, compteur_id: compteurId });
+                    }
+                });
+
+                if (compteurIds.length === 0) {
+                    alert('Aucune facture filtrée à exporter.');
+                    return;
+                }
+
+                // Envoyer les IDs au serveur via AJAX
+                $.ajax({
+                    url: '{{ route('invoices.batch-export') }}',
+                    method: 'POST',
+                    data: {
+                        compteurs: compteurIds,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    xhrFields: {
+                        responseType: 'blob' // Pour recevoir un fichier PDF
+                    },
+                    success: function(data) {
+                        // Télécharger le PDF
+                        let blob = new Blob([data], { type: 'application/pdf' });
+                        let link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = 'factures_filtrees_' + new Date().toISOString().slice(0, 10) + '.pdf';
+                        link.click();
+                    },
+                    error: function(xhr) {
+                        alert('Erreur lors de l’exportation : ' + xhr.responseText);
+                    }
+                });
+            });
         });
     </script>
 
-<script>
-    document.getElementById('exportButton').addEventListener('click', function() {
-        const annee = document.getElementById('filterYear').value;
-        const mois = document.getElementById('filterMonth').value;
-        if (annee && mois) {
-            window.location.href = `/factures/export?annee=${annee}&mois=${mois}`;
-        } else {
-            alert('Veuillez sélectionner une année et un mois.');
-        }
-    });
-</script>
-
-
     <!-- Styles personnalisés -->
     <style>
-        /* Option de survol */
         select:hover {
             border-color: #4B8BF5;
-            /* Couleur bleue pour l'option hover */
         }
 
-
-        #client_results {
-            position: absolute;
-            width: 100%;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            background-color: white;
-            z-index: 9999;
-        }
-
-        #client_results li {
-            padding: 8px;
-            cursor: pointer;
-        }
-
-        #client_results li:hover {
-            background-color: #f1f1f1;
-        }
-
-        /* Header DataTables */
         table.dataTable thead th {
             background: linear-gradient(45deg, #1d4ed8, #3b82f6);
             color: #fff;
@@ -413,7 +364,6 @@
             border-bottom: 2px solid #2563eb;
         }
 
-        /* Hover sur les lignes de table */
         table.dataTable tbody tr {
             transition: background-color 0.3s ease;
         }
@@ -422,7 +372,6 @@
             background-color: rgba(59, 130, 246, 0.1);
         }
 
-        /* Pagination personnalisée */
         div.dataTables_paginate a {
             background-color: #2563eb;
             color: #fff !important;
