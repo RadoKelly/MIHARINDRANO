@@ -9,10 +9,12 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\TarifsController;
 use App\Http\Controllers\FactureController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PaymentController;
+
+
+
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CompteurController;
-
-
 use App\Http\Controllers\PayementController;
 use App\Http\Controllers\ConsommationController;
 
@@ -105,4 +107,14 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/batch-export', [InvoiceController::class, 'batchExport'])->name('invoices.batch-export');
 
+    Route::prefix('sites/{site}')->group(function () {
+        Route::get('/liste-facture', [FactureController::class, 'index'])->name('listeFacture');
+        Route::post('/liste-facture/export', [FactureController::class, 'export'])->name('listeFacture.export');
+        Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
+        Route::get('/payments/create', [PaymentController::class, 'create'])->name('payments.create'); // Ajouté
+        Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store'); // Ajouté
+        Route::get('/payments/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit'); // Ajouté
+        Route::put('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update'); // Ajouté
+        Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy'); // Ajouté
+    });
 });

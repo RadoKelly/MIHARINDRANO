@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <title>Factures Filtrées - A4 Paysage (Dompdf)</title>
@@ -22,7 +23,6 @@
             width: 100%;
             display: table;
             table-layout: fixed;
-            page-break-after: always;
             margin-bottom: 0;
         }
 
@@ -51,7 +51,8 @@
             table-layout: fixed;
         }
 
-        th, td {
+        th,
+        td {
             padding: 2mm;
             border: 1px solid #333;
             vertical-align: top;
@@ -83,7 +84,8 @@
             text-align: left;
         }
 
-        .main-table td, .main-table th {
+        .main-table td,
+        .main-table th {
             text-align: center;
         }
 
@@ -113,7 +115,8 @@
             margin-bottom: 0;
         }
 
-        .inner-table th, .inner-table td {
+        .inner-table th,
+        .inner-table td {
             border: 1px solid #333;
             padding: 1.5mm;
             font-size: 8pt;
@@ -135,18 +138,22 @@
         }
 
         /* Réduire les marges */
-        .main-table th, .main-table td {
+        .main-table th,
+        .main-table td {
             padding: 1.5mm;
         }
     </style>
 </head>
+
 <body>
     @php
-        $compteurs = array_chunk($compteurs, 2); // Diviser les compteurs en paires
+        // Convertir en tableau si c'est une collection
+        $compteursArray = $compteurs instanceof \Illuminate\Support\Collection ? $compteurs->toArray() : $compteurs;
+        $compteurs = array_chunk($compteursArray, 2); // Diviser en paires
     @endphp
 
     @foreach ($compteurs as $pair)
-        <div class="invoice-wrapper">
+        <div class="invoice-wrapper" @if (!$loop->last) style="page-break-after: always;" @endif>
             <!-- Facture Gauche -->
             <div class="invoice-block left">
                 @if (isset($pair[0]))
@@ -246,11 +253,13 @@
                                 </tr>
                                 <tr>
                                     <td>Hofan'ny kaontera</td>
-                                    <td style="text-align: right;">{{ $compteur->getInvoiceData()['frais_compteur'] }}</td>
+                                    <td style="text-align: right;">{{ $compteur->getInvoiceData()['frais_compteur'] }}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Sarany tsy miova</td>
-                                    <td style="text-align: right;">{{ $compteur->getInvoiceData()['sarany_tsy_miova'] }}</td>
+                                    <td style="text-align: right;">
+                                        {{ $compteur->getInvoiceData()['sarany_tsy_miova'] }}</td>
                                 </tr>
                                 <tr>
                                     <td>Prime fixe</td>
@@ -258,7 +267,8 @@
                                 </tr>
                                 <tr>
                                     <td>Sarany haya</td>
-                                    <td style="text-align: right;">{{ $compteur->getInvoiceData()['sarany_hafa'] }}</td>
+                                    <td style="text-align: right;">{{ $compteur->getInvoiceData()['sarany_hafa'] }}
+                                    </td>
                                 </tr>
                             </table>
                         </div>
@@ -289,11 +299,13 @@
                                 </tr>
                                 <tr>
                                     <td>Ambiny tsy voaloa teo aloha</td>
-                                    <td style="text-align: right;">{{ $compteur->getInvoiceData()['ambiny_tsy_voaloa'] }}</td>
+                                    <td style="text-align: right;">
+                                        {{ $compteur->getInvoiceData()['ambiny_tsy_voaloa'] }}</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Vola aloa (Ar)</strong></td>
-                                    <td style="text-align: right;"><strong>{{ $compteur->getInvoiceData()['prix_total'] }}</strong></td>
+                                    <td style="text-align: right;">
+                                        <strong>{{ $compteur->getInvoiceData()['prix_total'] }}</strong></td>
                                 </tr>
                             </table>
                         </div>
@@ -301,7 +313,8 @@
 
                     <div class="footer-text">
                         <strong>Date limite:</strong> {{ $compteur->getInvoiceData()['date_fetra_fandoavana'] }}<br>
-                        <em>Arrêté la présente facture à la somme de {{ $compteur->getInvoiceData()['montant_en_lettres'] }}</em>
+                        <em>Arrêté la présente facture à la somme de
+                            {{ $compteur->getInvoiceData()['montant_en_lettres'] }}</em>
                     </div>
                 @endif
             </div>
@@ -405,11 +418,13 @@
                                 </tr>
                                 <tr>
                                     <td>Hofan'ny kaontera</td>
-                                    <td style="text-align: right;">{{ $compteur->getInvoiceData()['frais_compteur'] }}</td>
+                                    <td style="text-align: right;">{{ $compteur->getInvoiceData()['frais_compteur'] }}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Sarany tsy miova</td>
-                                    <td style="text-align: right;">{{ $compteur->getInvoiceData()['sarany_tsy_miova'] }}</td>
+                                    <td style="text-align: right;">
+                                        {{ $compteur->getInvoiceData()['sarany_tsy_miova'] }}</td>
                                 </tr>
                                 <tr>
                                     <td>Prime fixe</td>
@@ -417,7 +432,8 @@
                                 </tr>
                                 <tr>
                                     <td>Sarany haya</td>
-                                    <td style="text-align: right;">{{ $compteur->getInvoiceData()['sarany_hafa'] }}</td>
+                                    <td style="text-align: right;">{{ $compteur->getInvoiceData()['sarany_hafa'] }}
+                                    </td>
                                 </tr>
                             </table>
                         </div>
@@ -448,11 +464,13 @@
                                 </tr>
                                 <tr>
                                     <td>Ambiny tsy voaloa teo aloha</td>
-                                    <td style="text-align: right;">{{ $compteur->getInvoiceData()['ambiny_tsy_voaloa'] }}</td>
+                                    <td style="text-align: right;">
+                                        {{ $compteur->getInvoiceData()['ambiny_tsy_voaloa'] }}</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Vola aloa (Ar)</strong></td>
-                                    <td style="text-align: right;"><strong>{{ $compteur->getInvoiceData()['prix_total'] }}</strong></td>
+                                    <td style="text-align: right;">
+                                        <strong>{{ $compteur->getInvoiceData()['prix_total'] }}</strong></td>
                                 </tr>
                             </table>
                         </div>
@@ -460,11 +478,13 @@
 
                     <div class="footer-text">
                         <strong>Date limite:</strong> {{ $compteur->getInvoiceData()['date_fetra_fandoavana'] }}<br>
-                        <em>Arrêté la présente facture à la somme de {{ $compteur->getInvoiceData()['montant_en_lettres'] }}</em>
+                        <em>Arrêté la présente facture à la somme de
+                            {{ $compteur->getInvoiceData()['montant_en_lettres'] }}</em>
                     </div>
                 @endif
             </div>
         </div>
     @endforeach
 </body>
+
 </html>
