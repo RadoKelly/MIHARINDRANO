@@ -226,5 +226,24 @@ class CompteurController extends Controller
          
         }
 
+        public function search($siteId, Request $request)
+    {
+        $search = $request->input('q');
+        $compteurs = Compteur::where('site_id', $siteId)
+            ->where('numero_facture', 'like', "%$search%")
+            ->get();
+
+        return response()->json($compteurs);
+    }
+
+    public function showsearch($id)
+    {
+        $compteur = Compteur::with('client')->findOrFail($id);
+        return response()->json([
+            'client_nom' => $compteur->client->nom_client ?? 'Client inconnu',
+            'prix_total' => $compteur->getInvoiceData()['prix_total']
+        ]);
+    }
+
 
 }

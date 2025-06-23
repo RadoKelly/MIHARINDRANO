@@ -36,6 +36,8 @@
                             Catégorie</th>
                         <th class="px-4 py-2 text-center text-xs font-semibold text-white uppercase tracking-wider">
                             Référence</th>
+                        <th class="px-4 py-2 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                            Compteur</th>
                         <th class="px-4 py-2 text-center text-xs font-semibold text-white uppercase tracking-wider">Site
                         </th>
                         <th class="px-4 py-2 text-center text-xs font-semibold text-white uppercase tracking-wider">Actions
@@ -51,6 +53,7 @@
                             <td class="px-4 py-2 text-sm text-gray-700 text-center">{{ $client->localite }}</td>
                             <td class="px-4 py-2 text-sm text-gray-700 text-center">{{ $client->categorie }}</td>
                             <td class="px-4 py-2 text-sm text-gray-700 text-center">{{ $client->ref }}</td>
+                            <td class="px-4 py-2 text-sm text-gray-700 text-center">{{ $client->numero_compteur }}</td>
                             <td class="px-4 py-2 text-sm text-gray-700 text-center">{{ $client->site->nom_site }}</td>
                             <td class="px-4 py-2 text-sm text-center">
                                 <div class="flex justify-center space-x-2">
@@ -162,6 +165,5 @@
         div.dataTables_wrapper .dataTables_filter {
             margin-bottom: 20px !important;
         }
-
     </style>
 @endsection

@@ -17,9 +17,15 @@ class Site extends Model
         'responsable',
         'date_debut_etape',
     ];
+    
     public function clients()
     {
         return $this->hasMany(Client::class, 'id_site');
+    }
+
+    public function compteurs()
+    {
+        return $this->hasMany(Compteur::class, 'site_id'); // Relation avec Compteur via site_id
     }
 }
 

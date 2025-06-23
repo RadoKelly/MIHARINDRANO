@@ -81,7 +81,7 @@ Route::middleware('auth')->group(function () {
     Route::get('sites/{site}/compteur/create', [CompteurController::class, 'create'])->name('sites.compteur.create');
     Route::post('sites/{site}/compteur', [CompteurController::class, 'store'])->name('compteurs.store');
     Route::resource('sites/{site}/consommation', ConsommationController::class);
-    Route::resource('sites/{site}/payement', PayementController::class);
+    Route::resource('sites/{site}/payement', PaymentController::class);
     Route::resource('sites/{site}/caisse', CaisseController::class);
     Route::resource('sites/{site}/tarifs', TarifsController::class);
 
@@ -117,4 +117,8 @@ Route::middleware('auth')->group(function () {
         Route::put('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update'); // Ajouté
         Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy'); // Ajouté
     });
+
+// payment route
+Route::get('/clients/{siteId}/search', [PaymentController::class, 'search'])->name('clientsPayment.search');
+Route::post('/sites/{siteId}/payments', [PaymentController::class, 'store'])->name('payments.store');
 });
