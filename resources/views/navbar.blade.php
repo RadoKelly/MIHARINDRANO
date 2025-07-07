@@ -30,14 +30,23 @@
             <i class="fas fa-file-invoice"></i><span>Facture</span>
         </a>
 
-        <hr />
-
         <a class="nav-button {{ request()->routeIs('payments.index') ? 'active' : '' }}"
             href="{{ route('payments.index', ['site' => $site->id]) }}">
             <i class="fas fa-money-bill-wave"></i><span>Payment</span>
         </a>
 
+        <hr />
+
+        <!-- Section de déconnexion en bas -->
+        <div class="nav-section-bottom">
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+            <a class="nav-button logout" onclick="event.preventDefault(); if(confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) document.getElementById('logout-form').submit();">
+                <i class="fas fa-sign-out-alt"></i><span>Déconnexion</span>
+            </a>
+        </div>
+
         <div id="nav-content-highlight"></div>
     </div>
-
 </div>

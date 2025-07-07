@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Site;
-use GuzzleHttp\Client;
+use App\Models\Client;
 use App\Models\Compteur;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -227,23 +227,29 @@ class CompteurController extends Controller
         }
 
         public function search($siteId, Request $request)
-    {
-        $search = $request->input('q');
-        $compteurs = Compteur::where('site_id', $siteId)
-            ->where('numero_facture', 'like', "%$search%")
-            ->get();
+        {
+            $query = $request->input('query');
+            Log::info('Search query: ' . $query . ', Site ID: ' . $siteId);
+            
+            $allClients = Client::where('nom_client', 'like', "%$query%")->get();
+            Log::info('All clients matching query: ' . $allClients->count());
+        
+            $clients = Client::where('id_site', $siteId) // Utiliser id_site au lieu de site_id
+                ->where('nom_client', 'like', "%$query%")
+                ->get();
+        
+            Log::info('Clients found: ' . $clients->count());
+        
+            return response()->json($clients->map(function ($client) {
+                return [
+                    'id' => $client->id,
+                    'nom_client' => $client->nom_client,
+                    'tarif_id' => $client->tarif_id
+                ];
+            }));
+        }
 
-        return response()->json($compteurs);
-    }
 
-    public function showsearch($id)
-    {
-        $compteur = Compteur::with('client')->findOrFail($id);
-        return response()->json([
-            'client_nom' => $compteur->client->nom_client ?? 'Client inconnu',
-            'prix_total' => $compteur->getInvoiceData()['prix_total']
-        ]);
-    }
 
 
 }

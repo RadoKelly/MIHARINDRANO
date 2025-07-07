@@ -201,6 +201,13 @@
     z-index: 1;
     transition: color 0.2s;
   }
+
+  .logout:hover span, .logout:hover i {
+    color: #ff0000; /* Texte et icône en rouge au survol */
+  }
+  .nav-button i {
+    margin-right: 10px;
+  }
   .nav-button span {
     transition: opacity 1s;
   }

@@ -41,19 +41,20 @@ class PaymentController extends Controller
             ]);
     
             $client = Client::findOrFail($request->client_id);
-            $lastCompteur = $client->compteurs()->latest('date_releve')->first();
+            // Vérifier que le client appartient exclusivement au site actuel
+            $clientCompteurs = $client->compteurs()->get();
+            if ($clientCompteurs->isEmpty() || !$clientCompteurs->every(function ($compteur) use ($siteId) {
+                return $compteur->site_id == $siteId;
+            })) {
+                return redirect()->back()->withErrors(['error' => 'Ce client n\'appartient pas au site actuel.']);
+            }
+    
+            $lastCompteur = $client->compteurs()->where('site_id', $siteId)->latest('date_releve')->first();
             if (!$lastCompteur) {
-                return redirect()->back()->withErrors(['error' => 'Aucun compteur trouvé pour ce client.']);
+                return redirect()->back()->withErrors(['error' => 'Aucun compteur trouvé pour ce client dans ce site.']);
             }
     
             $montantPaye = $request->montant_paye;
-            Log::info('Données avant création : ', [
-                'client_id' => $request->client_id,
-                'montant_paye' => $montantPaye,
-                'date_paiement' => $request->date_paiement,
-                'compteur_id' => $lastCompteur->id
-            ]);
-    
             $payment = Payment::create([
                 'compteur_id' => $lastCompteur->id,
                 'client_id' => $request->client_id,
@@ -64,43 +65,52 @@ class PaymentController extends Controller
             ]);
     
             $payment->updateResteAPayer();
-            Log::info('Paiement créé : ', [
-                'id' => $payment->id,
-                'reste_a_payer' => $payment->reste_a_payer,
-                'statut' => $payment->statut
-            ]);
     
             return redirect()->route('payments.index', $siteId)
                 ->with('success', 'Paiement ajouté avec succès.');
         } catch (\Exception $e) {
-            Log::error('Erreur lors de la création du paiement : ', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
+            Log::error('Erreur lors de la création du paiement : ', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             return redirect()->back()->withErrors(['error' => 'Une erreur est survenue : ' . $e->getMessage()]);
         }
     }
     public function search($siteId, Request $request)
-{
-    $query = $request->input('query');
-    $clients = Client::whereHas('compteurs', function ($q) use ($siteId) {
-        $q->where('site_id', $siteId);
-    })
-    ->where('nom_client', 'like', "%$query%")
-    ->with(['compteurs' => function ($q) {
-        $q->latest('date_releve');
-    }])
-    ->get()
-    ->map(function ($client) {
-        $lastCompteur = $client->compteurs->first();
-        return [
-            'id' => $client->id,
-            'nom_client' => $client->nom_client,
-            'compteur_numero' => $lastCompteur ? $lastCompteur->numero_facture : 'N/A',
-            'montant_total' => $lastCompteur ? $lastCompteur->prix_total ?? 0 : 0
-        ];
-    });
-
-    return response()->json($clients);
-}
+    {
+        $query = $request->input('query');
+        Log::info('Search query: ' . $query . ', Site ID: ' . $siteId); // Débogage
+        
+        $clients = Client::whereHas('compteurs', function ($q) use ($siteId) {
+            $q->where('site_id', $siteId);
+        })
+        ->where('nom_client', 'like', "%$query%")
+        ->with(['compteurs' => function ($q) use ($siteId) {
+            $q->where('site_id', $siteId)->latest('date_releve');
+        }])
+        ->get()
+        ->filter(function ($client) use ($siteId) {
+            $allCompteurs = $client->compteurs()->withoutGlobalScopes()->get();
+            if ($allCompteurs->isEmpty()) {
+                Log::info('Client ' . $client->id . ' has no compteurs');
+                return false;
+            }
+            $isValid = $allCompteurs->every(function ($compteur) use ($siteId) {
+                return $compteur->site_id == $siteId;
+            });
+            if (!$isValid) {
+                Log::info('Client ' . $client->id . ' has compteurs from other sites');
+            }
+            return $isValid;
+        })
+        ->map(function ($client) {
+            $lastCompteur = $client->compteurs->first();
+            return [
+                'id' => $client->id,
+                'nom_client' => $client->nom_client,
+                'compteur_numero' => $lastCompteur ? $lastCompteur->numero_facture : 'N/A',
+                'montant_total' => $lastCompteur ? $lastCompteur->prix_total ?? 0 : 0
+            ];
+        });
+    
+        Log::info('Found clients: ' . $clients->count()); // Débogage
+        return response()->json($clients->values());
+    }
 }

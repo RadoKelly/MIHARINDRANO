@@ -121,4 +121,6 @@ Route::middleware('auth')->group(function () {
 // payment route
 Route::get('/clients/{siteId}/search', [PaymentController::class, 'search'])->name('clientsPayment.search');
 Route::post('/sites/{siteId}/payments', [PaymentController::class, 'store'])->name('payments.store');
+
+Route::get('/compteurs/{site}/search', [CompteurController::class, 'search'])->name('compteurs.search');
 });

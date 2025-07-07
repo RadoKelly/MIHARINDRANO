@@ -97,63 +97,62 @@
         }
     </style>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('client_search');
-            const clientResults = document.getElementById('client_results');
-            const clientIdInput = document.getElementById('client_id');
-            const tarifInput = document.getElementById('tarif');
-            const tarifIdInput = document.getElementById('tarif_id');
-            const form = document.querySelector('form');
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('client_search');
+        const clientResults = document.getElementById('client_results');
+        const clientIdInput = document.getElementById('client_id');
+        const tarifInput = document.getElementById('tarif');
+        const tarifIdInput = document.getElementById('tarif_id');
+        const form = document.querySelector('form');
 
-            searchInput.addEventListener('input', function() {
-                const query = searchInput.value.trim();
-                if (query.length < 2) {
-                    clientResults.classList.add('hidden');
-                    return;
-                }
+        searchInput.addEventListener('input', function() {
+            const query = searchInput.value.trim();
+            if (query.length < 2) {
+                clientResults.classList.add('hidden');
+                return;
+            }
 
-                // Requête AJAX pour récupérer les clients correspondants
-                fetch("{{ route('clients.search') }}?query=" + query)
-                    .then(response => response.json())
-                    .then(data => {
-                        clientResults.innerHTML = '';
-                        if (data.length === 0) {
-                            clientResults.innerHTML = '<li class="p-2">Aucun client trouvé</li>';
-                            clientResults.classList.remove('hidden');
-                            return;
-                        }
-
+            fetch("{{ route('compteurs.search', $site) }}?query=" + encodeURIComponent(query))
+                .then(response => response.json())
+                .then(data => {
+                    clientResults.innerHTML = '';
+                    if (data.length === 0) {
+                        clientResults.innerHTML = '<li class="p-2">Aucun client trouvé</li>';
                         clientResults.classList.remove('hidden');
+                        return;
+                    }
 
-                        data.forEach(client => {
-                            const li = document.createElement('li');
-                            li.textContent = client.nom_client;
-                            li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                    clientResults.classList.remove('hidden');
 
-                            li.addEventListener('click', function() {
-                                searchInput.value = client.nom_client;
-                                clientIdInput.value = client.id;
-                                tarifInput.value = "Compteur : " + client.tarif_id;  // Mise à jour du tarif affiché
-                                tarifInput.placeholder = "Tarif : " + client.tarif_id; // Affichage du tarif dans le placeholder
-                                tarifIdInput.value = client.tarif_id;  // Mise à jour du tarif_id caché
-                                clientResults.classList.add('hidden');
-                            });
+                    data.forEach(client => {
+                        const li = document.createElement('li');
+                        li.textContent = client.nom_client;
+                        li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
 
-                            clientResults.appendChild(li);
+                        li.addEventListener('click', function() {
+                            searchInput.value = client.nom_client;
+                            clientIdInput.value = client.id;
+                            tarifInput.value = "Compteur : " + client.tarif_id;
+                            tarifInput.placeholder = "Tarif : " + client.tarif_id;
+                            tarifIdInput.value = client.tarif_id;
+                            clientResults.classList.add('hidden');
                         });
-                    })
-                    .catch(error => {
-                        console.error('Erreur AJAX:', error);
-                    });
-            });
 
-            form.addEventListener('submit', function(event) {
-                if (!clientIdInput.value) {
-                    alert("Veuillez sélectionner un client.");
-                    event.preventDefault();
-                }
-            });
+                        clientResults.appendChild(li);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erreur AJAX:', error);
+                });
         });
-    </script>
+
+        form.addEventListener('submit', function(event) {
+            if (!clientIdInput.value) {
+                alert("Veuillez sélectionner un client.");
+                event.preventDefault();
+            }
+        });
+    });
+</script>
 @endsection
