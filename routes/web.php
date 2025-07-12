@@ -108,8 +108,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/batch-export', [InvoiceController::class, 'batchExport'])->name('invoices.batch-export');
 
     Route::prefix('sites/{site}')->group(function () {
-        Route::get('/liste-facture', [FactureController::class, 'index'])->name('listeFacture');
-        Route::post('/liste-facture/export', [FactureController::class, 'export'])->name('listeFacture.export');
         Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
         Route::get('/payments/create', [PaymentController::class, 'create'])->name('payments.create'); // Ajouté
         Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store'); // Ajouté
@@ -123,4 +121,8 @@ Route::get('/clients/{siteId}/search', [PaymentController::class, 'search'])->na
 Route::post('/sites/{siteId}/payments', [PaymentController::class, 'store'])->name('payments.store');
 
 Route::get('/compteurs/{site}/search', [CompteurController::class, 'search'])->name('compteurs.search');
+
+Route::get('/payments/export-fiche', [PaymentController::class, 'exportFiche'])->name('payments.exportFiche');
+
+
 });

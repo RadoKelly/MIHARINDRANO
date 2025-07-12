@@ -6,34 +6,10 @@
             <div class="hidden lg:flex flex-col items-center justify-center text-white space-y-6">
                 <div class="relative">
                     <!-- Cercle de fond -->
-                    <div class="w-80 h-80 bg-gradient-to-br from-blue-200 to-cyan-300 rounded-full flex items-center justify-center relative overflow-hidden">
-                        <!-- Personnage stylisé -->
-                        <div class="relative z-10">
-                            <!-- Corps -->
-                            <div class="w-16 h-20 bg-white rounded-t-full mx-auto mb-2"></div>
-                            <!-- Pantalon -->
-                            <div class="w-20 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-b-full mx-auto"></div>
-                            <!-- Bras levés -->
-                            <div class="absolute -top-4 -left-4 w-8 h-12 bg-white rounded-full transform rotate-45"></div>
-                            <div class="absolute -top-4 -right-4 w-8 h-12 bg-white rounded-full transform -rotate-45"></div>
-                            <!-- Cheveux -->
-                            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 w-12 h-8 bg-indigo-900 rounded-t-full"></div>
-                        </div>
-                        
-                        <!-- Éléments décoratifs -->
-                        <div class="absolute top-16 left-8 w-16 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full transform rotate-12 opacity-80"></div>
-                        <div class="absolute bottom-20 right-12 w-12 h-6 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full transform -rotate-12 opacity-80"></div>
-                        
-                        <!-- Feuilles décoratives -->
-                        <div class="absolute bottom-8 left-16">
-                            <div class="w-8 h-16 bg-gradient-to-t from-blue-500 to-teal-400 rounded-full transform rotate-12"></div>
-                            <div class="w-6 h-12 bg-gradient-to-t from-purple-500 to-blue-400 rounded-full transform -rotate-12 -mt-8 ml-4"></div>
-                        </div>
-                        <div class="absolute bottom-8 right-16">
-                            <div class="w-8 h-16 bg-gradient-to-t from-teal-500 to-blue-400 rounded-full transform -rotate-12"></div>
-                            <div class="w-6 h-12 bg-gradient-to-t from-blue-500 to-purple-400 rounded-full transform rotate-12 -mt-8 -ml-4"></div>
-                        </div>
+                    <div class="w-80 h-80 bg-center bg-cover bg-no-repeat rounded-full flex items-center justify-center relative overflow-hidden" style="background-image: url('/image/miharindrano.png');">
+                        <!-- Ton contenu ici -->
                     </div>
+                    
                 </div>
                 
                 <div class="text-center max-w-md">

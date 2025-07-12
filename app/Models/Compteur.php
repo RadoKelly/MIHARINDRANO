@@ -45,7 +45,9 @@ class Compteur extends Model
         $prix_par_index = (float) ($consommation * $pu_m3);
         $hetra_fnre = $consommation * 8; // 8 Ar/m³
         $tva = $consommation > 10 ? $prix_par_index * 0.20 : 0; // TVA 20% si > 10 m³
-        $prix_total = $prix_par_index + $frais_compteur;
+        $reste_precedent = $this->getDernierReste();
+
+        $prix_total = $prix_par_index + $frais_compteur + $reste_precedent;
 
         // Convertir le montant total en lettres (en malgache ou français)
         $formatter = new NumberFormatter('fr_FR', NumberFormatter::SPELLOUT);
@@ -76,9 +78,39 @@ class Compteur extends Model
             'sarany_tsy_miova' => number_format(0, 2, '.', ''), // À ajuster selon les besoins
             'prime_fixe' => number_format(0, 2, '.', ''), // À ajuster
             'sarany_hafa' => number_format(0, 2, '.', ''), // À ajuster
-            'ambiny_tsy_voaloa' => number_format(0, 2, '.', ''), // À ajuster
+            'ambiny_tsy_voaloa' => number_format($reste_precedent, 2, '.', ''), // À ajuster
             'date_fetra_fandoavana' => Carbon::parse($this->date_releve)->addDays(15)->format('Y-m-d'), // Date limite : 15 jours après relevé
             'montant_en_lettres' => ucfirst($montant_en_lettres),
         ];
+    }
+
+    public function paiements()
+    {
+        return $this->hasMany(Payment::class, 'compteur_id');
+    }
+
+    public function getDernierReste()
+    {
+        $compteurPrecedent = Compteur::where('client_id', $this->client_id)
+            ->where('created_at', '<', $this->created_at)
+            ->orderByDesc('created_at')
+            ->first();
+
+        if (!$compteurPrecedent) {
+            return 0;
+        }
+
+        // Récupérer le dernier paiement de cette facture
+        $paiement = $compteurPrecedent->paiements()->orderByDesc('created_at')->first();
+
+        return $paiement ? $paiement->reste_a_payer : 0;
+    }
+
+    public function getFacturePrecedente()
+    {
+        return Compteur::where('client_id', $this->client_id)
+            ->where('created_at', '<', $this->created_at)
+            ->orderByDesc('created_at')
+            ->first();
     }
 }

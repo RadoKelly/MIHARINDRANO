@@ -336,7 +336,7 @@ label[for=nav-toggle] {
 
 #nav-content::-webkit-scrollbar-thumb {
   border-radius: 99px;
-  background-color: #D62929;
+  background-color: #afaeae31;
 }
 
 .nav-button {

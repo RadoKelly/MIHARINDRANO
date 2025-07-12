@@ -27,10 +27,6 @@
                 <i class="fas fa-tint"></i><span>Tarifs</span>
             </a>
 
-            <a class="nav-button {{ request()->routeIs('listeFacture') ? 'active' : '' }}"
-               href="{{ route('listeFacture', ['site' => $site->id]) }}">
-                <i class="fas fa-file-invoice"></i><span>Facture</span>
-            </a>
 
             <a class="nav-button {{ request()->routeIs('payments.index') ? 'active' : '' }}"
                href="{{ route('payments.index', ['site' => $site->id]) }}">

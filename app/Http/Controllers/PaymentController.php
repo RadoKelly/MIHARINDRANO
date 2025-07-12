@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\Payment;
 use App\Models\Compteur;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
@@ -113,4 +114,42 @@ class PaymentController extends Controller
         Log::info('Found clients: ' . $clients->count()); // Débogage
         return response()->json($clients->values());
     }
+    
+    public function exportFiche(Request $request)
+    {
+        $annee = $request->input('annee');
+        $mois = $request->input('mois');
+    
+        $payments = Payment::with(['client.tarif', 'compteur'])
+            ->whereYear('date_paiement', $annee)
+            ->whereMonth('date_paiement', $mois)
+            ->get();
+    
+        $pdf = Pdf::loadView('payment.fiche_pdf', [
+            'payments' => $payments,
+            'annee' => $annee,
+            'mois' => $mois,
+        ]);
+    
+        // Application des options personnalisées
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => true,
+            'defaultFont' => 'Arial',
+            'dpi' => 150,
+            'fontSubsetting' => true,
+            'isRemoteEnabled' => false,
+            'debugPng' => false,
+            'debugKeepTemp' => false,
+            'debugCss' => false,
+            'enable_font_subsetting' => true,
+            'pdf_backend' => 'CPDF',
+            'defaultPaperSize' => 'A4',
+            'chroot' => public_path(),
+        ]);
+    
+        return $pdf->download("fiche_paiement_{$annee}_{$mois}.pdf");
+    }
+    
+    
 }

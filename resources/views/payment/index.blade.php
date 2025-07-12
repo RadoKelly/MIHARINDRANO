@@ -46,12 +46,18 @@
 
             <!-- Boutons à droite (Ajouter + Exporter) -->
             <div class="relative flex gap-2">
+
+                <form method="GET" action="{{ route('payments.exportFiche') }}" target="_blank" id="exportFicheForm">
+                    <input type="hidden" name="annee" id="exportFicheAnnee">
+                    <input type="hidden" name="mois" id="exportFicheMois">
+                    <button type="submit" id="exportFicheButton"
+                        class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        disabled>Exporter la fiche</button>
+                </form>
                 <button type="button" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-400" data-bs-toggle="modal" data-bs-target="#addPaymentModal">
                     Ajouter
                 </button>
-                <button type="submit" form="exportForm" id="exportButton" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-400" disabled>
-                    Exporter les Paiements Filtrés
-                </button>
+                
             </div>
         </div>
 
@@ -389,8 +395,42 @@
             $('#reste_a_payer').val(reste >= 0 ? reste.toFixed(2) : 0);
         }
     });
-</script>
 
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const filterYear = document.getElementById('filterYear');
+    const filterMonth = document.getElementById('filterMonth');
+    const exportForm = document.getElementById('exportFicheForm');
+    const exportButton = document.getElementById('exportFicheButton');
+    const exportAnneeInput = document.getElementById('exportFicheAnnee');
+    const exportMoisInput = document.getElementById('exportFicheMois');
+
+    function updateExportButton() {
+        const annee = filterYear.value;
+        const mois = filterMonth.value;
+
+        console.log("Sélection : ", annee, mois);
+
+        if (annee && mois) {
+            exportButton.disabled = false;
+            exportAnneeInput.value = annee;
+            exportMoisInput.value = mois;
+        } else {
+            exportButton.disabled = true;
+            exportAnneeInput.value = '';
+            exportMoisInput.value = '';
+        }
+    }
+
+    filterYear.addEventListener('change', updateExportButton);
+    filterMonth.addEventListener('change', updateExportButton);
+
+    updateExportButton(); // initial call
+});
+
+</script>
 
         <!-- Styles personnalisés -->
         <style>

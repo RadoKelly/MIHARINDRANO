@@ -280,17 +280,30 @@
                             <td>TVA (>10 m³)</td>
                             <td style="text-align: right;">0,00</td>
                         </tr>
-                        <tr>
-                            <td>Faktiora {{ $compteur->getInvoiceData()['date_releve_formatted'] }}</td>
-                            <td style="text-align: right;">{{ $compteur->getInvoiceData()['prix_total'] }}</td>
-                        </tr>
+                        @php
+                            $facturePrecedente = $compteur->getFacturePrecedente();
+                        @endphp
+
+                        @if ($facturePrecedente)
+                            <tr>
+                                <td>Faktiora {{ $facturePrecedente->getInvoiceData()['date_releve_formatted'] }}</td>
+                                <td style="text-align: right;">
+                                    {{ number_format($facturePrecedente->getInvoiceData()['prix_total'], 2, ',', ' ') }}
+                                    Ar
+                                </td>
+                            </tr>
+                        @endif
+
                         <tr>
                             <td>Ambiny tsy voaloa teo aloha</td>
-                            <td style="text-align: right;">{{ $compteur->getInvoiceData()['ambiny_tsy_voaloa'] }}</td>
+                            <td style="text-align: right;">
+                                {{ number_format($compteur->getInvoiceData()['ambiny_tsy_voaloa'], 2, ',', ' ') }} Ar
+                            </td>
                         </tr>
                         <tr>
                             <td><strong>Vola aloa (Ar)</strong></td>
-                            <td style="text-align: right;"><strong>{{ $compteur->getInvoiceData()['prix_total'] }}</strong></td>
+                            <td style="text-align: right;">
+                                <strong>{{ $compteur->getInvoiceData()['prix_total'] }}</strong></td>
                         </tr>
                     </table>
                 </div>
@@ -298,13 +311,14 @@
 
             <div class="footer-text">
                 <strong>Date limite:</strong> {{ $compteur->getInvoiceData()['date_fetra_fandoavana'] }}<br>
-                <em>Arrêté la présente facture à la somme de {{ $compteur->getInvoiceData()['montant_en_lettres'] }}</em>
+                <em>Arrêté la présente facture à la somme de
+                    {{ $compteur->getInvoiceData()['montant_en_lettres'] }}</em>
             </div>
         </div>
 
         <!-- Facture Droite (copie) -->
         <div class="invoice-block right">
-            
+
         </div>
     </div>
 </body>

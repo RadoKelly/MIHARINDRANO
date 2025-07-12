@@ -15,7 +15,9 @@ class InvoiceController extends Controller
     public function generatePDF($siteId, $compteurId)
     {
         $site = Site::findOrFail($siteId);
-        $compteur = Compteur::where('site_id', $siteId)->findOrFail($compteurId);
+        $compteur = Compteur::where('site_id', $siteId)->with(['paiements' => function ($query) {
+            $query->latest()->first(); // Récupère le dernier paiement
+        }])->findOrFail($compteurId);
         $pdf = Pdf::loadView('facture.twofacture', compact('site', 'compteur'));
 
         // Configuration papier A4 paysage
@@ -112,29 +114,5 @@ class InvoiceController extends Controller
         $fileName = 'factures_filtrees_' . now()->format('Ymd_His') . '.pdf';
         return $pdf->download($fileName);
     }
-
-    //test dompdf
-    // public function testPdf()
-    // {
-    //     // Utilise ta vue existante
-    //     $pdf = Pdf::loadView('facture.twofacture')
-    //     ->setOptions([
-    //         'dpi' => 150, // Résolution pour une bonne qualité
-    //         'defaultFont' => 'DejaVu Sans', // Police par défaut (support Unicode)
-    //         'isRemoteEnabled' => true, // Permet le chargement des images/CSS distants
-    //         'isHtml5ParserEnabled' => true, // Support des balises HTML5
-    //         'isFontSubsettingEnabled' => true, // Réduit la taille du PDF
-    //         'isPhpEnabled' => true, // Permet d'exécuter du PHP dans la vue
-    //         'defaultPaperSize' => 'a4', // Format de papier
-    //         'defaultPaperOrientation' => 'paysage', // Orientation
-    //         'fontDir' => public_path('fonts/'), // Dossier pour polices personnalisées
-    //         'fontCache' => public_path('fonts/'), // Cache des polices
-    //         'fontHeightRatio' => 1.0, // Ratio pour la hauteur des polices
-    //     ]);
-        
-        
-    //     return $pdf->stream('test.pdf');
-    // }
-
     
 }

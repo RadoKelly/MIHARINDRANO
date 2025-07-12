@@ -3,33 +3,8 @@
         <div class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             
             <!-- Section gauche - Illustration (identique à login) -->
-            <div class="hidden lg:flex flex-col items-center justify-center text-white space-y-6">
-                <div class="relative">
-                    <div class="w-80 h-80 bg-gradient-to-br from-blue-200 to-cyan-300 rounded-full flex items-center justify-center relative overflow-hidden">
-                        <div class="relative z-10">
-                            <div class="w-16 h-20 bg-white rounded-t-full mx-auto mb-2"></div>
-                            <div class="w-20 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-b-full mx-auto"></div>
-                            <div class="absolute -top-4 -left-4 w-8 h-12 bg-white rounded-full transform rotate-45"></div>
-                            <div class="absolute -top-4 -right-4 w-8 h-12 bg-white rounded-full transform -rotate-45"></div>
-                            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 w-12 h-8 bg-indigo-900 rounded-t-full"></div>
-                        </div>
-                        <div class="absolute top-16 left-8 w-16 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full transform rotate-12 opacity-80"></div>
-                        <div class="absolute bottom-20 right-12 w-12 h-6 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full transform -rotate-12 opacity-80"></div>
-                        <div class="absolute bottom-8 left-16">
-                            <div class="w-8 h-16 bg-gradient-to-t from-blue-500 to-teal-400 rounded-full transform rotate-12"></div>
-                            <div class="w-6 h-12 bg-gradient-to-t from-purple-500 to-blue-400 rounded-full transform -rotate-12 -mt-8 ml-4"></div>
-                        </div>
-                        <div class="absolute bottom-8 right-16">
-                            <div class="w-8 h-16 bg-gradient-to-t from-teal-500 to-blue-400 rounded-full transform -rotate-12"></div>
-                            <div class="w-6 h-12 bg-gradient-to-t from-blue-500 to-purple-400 rounded-full transform rotate-12 -mt-8 -ml-4"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center max-w-md">
-                    <p class="text-lg opacity-90 leading-relaxed">
-                        Bienvenue sur votre plateforme de gestion. Inscrivez-vous pour créer votre espace personnel et explorer toutes les fonctionnalités.
-                    </p>
-                </div>
+            <div class="w-80 h-80 bg-center bg-cover bg-no-repeat rounded-full flex items-center justify-center relative overflow-hidden" style="background-image: url('/image/miharindrano.png');">
+                <!-- Ton contenu ici -->
             </div>
 
             <!-- Section droite - Formulaire d'inscription -->
@@ -116,12 +91,12 @@
 
                         <button type="submit" 
                                 class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-300">
-                            {{ __('Register') }}
+                            {{ __('Enregistrer') }}
                         </button>
 
                         <div class="text-center">
                             <a class="text-sm text-purple-600 hover:text-purple-800 font-medium transition-colors duration-200 border-b border-transparent hover:border-purple-600" href="{{ route('login') }}">
-                                {{ __('Already registered?') }}
+                                {{ __('Déjà inscrit ?') }}
                             </a>
                         </div>
                     </form>
